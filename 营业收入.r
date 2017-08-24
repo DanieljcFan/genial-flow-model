@@ -1,4 +1,4 @@
-#data from：曹哲 report.rda (data.RData)
+#data from：晁子程 report.rda (data.RData)
 #data to: 邢家铭
 #提取报表中的营业收入，用以计算行业集中度
 
