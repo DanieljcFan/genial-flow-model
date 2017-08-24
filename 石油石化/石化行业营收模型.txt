@@ -1,0 +1,30 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_petro[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-6.534e+09 -1.965e+09 -5.594e+08  1.940e+09  6.086e+09 
+
+Coefficients:
+                                    Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                        3.138e+09  3.102e+09   1.012  0.32313    
+y_lag4                             7.412e-01  9.331e-02   7.943 9.23e-08 ***
+CCFEI价格指数.己内酰胺CPL内盘      1.042e+06  2.030e+05   5.133 4.38e-05 ***
+市场价.平均价..辛醇.华东地区_lag4 -1.325e+06  3.969e+05  -3.339  0.00312 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.421e+09 on 21 degrees of freedom
+Multiple R-squared:  0.8185,	Adjusted R-squared:  0.7925 
+F-statistic: 31.56 on 3 and 21 DF,  p-value: 5.727e-08
+
+                      (Intercept)                            y_lag4     CCFEI价格指数.己内酰胺CPL内盘 
+                     3.138331e+09                      7.411822e-01                      1.042026e+06 
+市场价.平均价..辛醇.华东地区_lag4 
+                    -1.324946e+06 
+[1] "置信区间:"
+           fit         lwr         upr
+26 21987101467 18978421270 24995781663
+[1] "标准差:"
+[1] 1446749455

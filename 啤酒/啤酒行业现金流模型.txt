@@ -1,0 +1,31 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_beer[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-182359313  -48049431    3747099   28092149  169520285 
+
+Coefficients:
+                            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               -5.429e+07  1.939e+08  -0.280  0.78466    
+seasonQ2                   2.443e+08  5.971e+07   4.091  0.00179 ** 
+seasonQ4                  -6.061e+08  5.837e+07 -10.383 5.07e-07 ***
+进口数量.大麦.当月值_lag1 -3.413e+02  1.139e+02  -2.997  0.01213 *  
+申万行业指数.啤酒          1.894e+05  8.100e+04   2.339  0.03926 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 91960000 on 11 degrees of freedom
+Multiple R-squared:  0.9547,	Adjusted R-squared:  0.9382 
+F-statistic: 57.96 on 4 and 11 DF,  p-value: 2.536e-07
+
+              (Intercept)                  seasonQ2                  seasonQ4 进口数量.大麦.当月值_lag1 
+            -5.429199e+07              2.442922e+08             -6.060616e+08             -3.413093e+02 
+        申万行业指数.啤酒 
+             1.894352e+05 
+[1] "置信区间:"
+         fit       lwr       upr
+17 451108073 301727668 600488477
+[1] "标准差:"
+[1] 67869792

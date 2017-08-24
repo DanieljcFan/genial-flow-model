@@ -1,0 +1,32 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_cloth[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-46301742 -19330184  -6153263  19235270  57142032 
+
+Coefficients:
+                                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                          7.468e+08  1.321e+08   5.655 1.88e-05 ***
+seasonQ4                             6.109e+07  2.338e+07   2.612 0.017128 *  
+出口金额.鞋类.当月值_lag1           -4.203e+02  1.857e+02  -2.263 0.035543 *  
+金融机构.新增人民币贷款.当月值_lag4 -1.714e+04  3.536e+03  -4.848 0.000112 ***
+M2.同比                             -2.249e+07  5.363e+06  -4.193 0.000493 ***
+CPI.当月同比_lag1                   -2.965e+07  6.846e+06  -4.331 0.000360 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 32220000 on 19 degrees of freedom
+Multiple R-squared:  0.7987,	Adjusted R-squared:  0.7457 
+F-statistic: 15.08 on 5 and 19 DF,  p-value: 4.778e-06
+
+                        (Intercept)                            seasonQ4           出口金额.鞋类.当月值_lag1 
+                       7.468328e+08                        6.108841e+07                       -4.202822e+02 
+金融机构.新增人民币贷款.当月值_lag4                             M2.同比                   CPI.当月同比_lag1 
+                      -1.714160e+04                       -2.248619e+07                       -2.964937e+07 
+[1] "置信区间:"
+         fit       lwr       upr
+26 162843657 115183456 210503858
+[1] "标准差:"
+[1] 22770976

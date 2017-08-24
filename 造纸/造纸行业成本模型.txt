@@ -1,0 +1,31 @@
+
+Call:
+lm(formula = cost ~ ., data = dat_paper[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-81180148 -28442490   4352823  20944965  69389778 
+
+Coefficients:
+                                       Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                           -29240915  276426561  -0.106   0.9168    
+seasonQ2                              109513249   21548976   5.082 5.69e-05 ***
+社会消费品零售总额.当月值_lag4            30958       2698  11.476 2.98e-10 ***
+产量.机制纸及纸板.当月值                 602151     221536   2.718   0.0132 *  
+出口交货值.造纸及纸制品业.当月值_lag1   8428830    3398719   2.480   0.0222 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 43680000 on 20 degrees of freedom
+Multiple R-squared:  0.9497,	Adjusted R-squared:  0.9397 
+F-statistic: 94.43 on 4 and 20 DF,  p-value: 1.085e-12
+
+                          (Intercept)                              seasonQ2        社会消费品零售总额.当月值_lag4 
+                         -29240914.67                          109513248.50                              30957.49 
+             产量.机制纸及纸板.当月值 出口交货值.造纸及纸制品业.当月值_lag1 
+                            602151.07                            8428830.39 
+[1] "置信区间:"
+          fit        lwr        upr
+26 1969704930 1928941549 2010468312
+[1] "标准差:"
+[1] 19541753

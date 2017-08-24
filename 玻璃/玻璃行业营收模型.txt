@@ -1,0 +1,31 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_glass[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-56051250 -18877512   3415567  17029275  70919953 
+
+Coefficients:
+                                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                       4.800e+08  9.629e+07   4.984 7.12e-05 ***
+y_lag4                            7.743e-01  1.132e-01   6.838 1.20e-06 ***
+现货价.天然气.俄罗斯产..德国港口 -3.102e+07  4.542e+06  -6.828 1.23e-06 ***
+房地产开发投资完成额.累计值       3.744e+03  1.698e+03   2.205   0.0393 *  
+申万行业指数.纯碱                -2.562e+04  1.250e+04  -2.050   0.0537 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 30840000 on 20 degrees of freedom
+Multiple R-squared:  0.9784,	Adjusted R-squared:  0.974 
+F-statistic: 226.1 on 4 and 20 DF,  p-value: 2.42e-16
+
+                     (Intercept)                           y_lag4 现货价.天然气.俄罗斯产..德国港口 
+                    4.799620e+08                     7.743407e-01                    -3.101573e+07 
+     房地产开发投资完成额.累计值                申万行业指数.纯碱 
+                    3.744292e+03                    -2.561936e+04 
+[1] "置信区间:"
+          fit        lwr        upr
+26 1165499017 1107543706 1223454328
+[1] "标准差:"
+[1] 27783474

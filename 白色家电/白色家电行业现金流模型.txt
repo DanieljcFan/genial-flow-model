@@ -1,0 +1,33 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_wgoods[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-281325610  -72182806    7997631   63871301  261737640 
+
+Coefficients:
+                                                            Estimate Std. Error t value Pr(>|t|)  
+(Intercept)                                               -7.158e+09  4.817e+09  -1.486   0.1654  
+进口数量.废铜.当月值                                      -2.808e+03  1.090e+03  -2.576   0.0258 *
+出口数量.洗衣机.当月值                                    -1.237e+07  4.159e+06  -2.974   0.0126 *
+X36大中城市日用工业消费品平均价格.洗衣机.滚筒式.5kg._lag1  3.951e+06  1.714e+06   2.306   0.0416 *
+y_lag1                                                    -3.616e-01  1.384e-01  -2.613   0.0241 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 153100000 on 11 degrees of freedom
+Multiple R-squared:  0.7825,	Adjusted R-squared:  0.7034 
+F-statistic: 9.893 on 4 and 11 DF,  p-value: 0.001204
+
+                                              (Intercept)                                      进口数量.废铜.当月值 
+                                            -7.157764e+09                                             -2.808212e+03 
+                                   出口数量.洗衣机.当月值 X36大中城市日用工业消费品平均价格.洗衣机.滚筒式.5kg._lag1 
+                                            -1.236988e+07                                              3.951027e+06 
+                                                   y_lag1 
+                                            -3.615929e-01 
+[1] "置信区间:"
+         fit       lwr        upr
+17 876029755 388372283 1363687228
+[1] "标准差:"
+[1] 221563272

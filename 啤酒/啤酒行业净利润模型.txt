@@ -1,0 +1,28 @@
+
+Call:
+lm(formula = netin ~ ., data = dat_beer[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-65773378  -8427577   1360239  12515827  40576611 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)      -177673328   69507051  -2.556 0.025177 *  
+seasonQ2           51669043   17983155   2.873 0.014007 *  
+seasonQ4         -136858588   29886165  -4.579 0.000633 ***
+产量.啤酒.当月值     708863     155806   4.550 0.000667 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 28430000 on 12 degrees of freedom
+Multiple R-squared:  0.9629,	Adjusted R-squared:  0.9536 
+F-statistic: 103.8 on 3 and 12 DF,  p-value: 7.524e-09
+
+     (Intercept)         seasonQ2         seasonQ4 产量.啤酒.当月值 
+      -177673328         51669043       -136858588           708863 
+[1] "置信区间:"
+         fit       lwr       upr
+17 180011877 146373757 213649997
+[1] "标准差:"
+[1] 15438738

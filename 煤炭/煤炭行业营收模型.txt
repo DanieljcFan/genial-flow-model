@@ -1,0 +1,29 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_coal[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-1.224e+09 -8.773e+07 -3.986e+07  3.768e+08  7.937e+08 
+
+Coefficients:
+                                                       Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                                          -1.143e+10  2.485e+09  -4.600 0.000222 ***
+用电量.山西.当月值                                    9.336e+03  1.806e+03   5.169 6.44e-05 ***
+产量.水泥.当月值                                      2.256e+05  5.078e+04   4.442 0.000315 ***
+坑口价.褐煤.A25..V.46...0.5.S.Q3500..内蒙古.霍林郭勒  9.024e+06  2.301e+06   3.922 0.001000 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 539100000 on 18 degrees of freedom
+Multiple R-squared:  0.8313,	Adjusted R-squared:  0.8032 
+F-statistic: 29.57 on 3 and 18 DF,  p-value: 3.588e-07
+
+                                         (Intercept) 
+                                       -1.142995e+10 
+                                  用电量.山西.当月值 
+                                        9.336376e+03 
+                                    产量.水泥.当月值 
+                                        2.255747e+05 
+坑口价.褐煤.A25..V.46...0.5.S.Q3500..内蒙古.霍林郭勒 
+                                        9.023942e+06 

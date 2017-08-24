@@ -1,0 +1,25 @@
+
+Call:
+lm(formula = netin ~ ., data = dat_coal[, index[-c(3, 6, 7, 8)]])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-126181053  -45557946   -9312418   43006068  151507939 
+
+Coefficients:
+                               Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                  -1.372e+09  2.524e+08  -5.434 1.39e-05 ***
+产量.火电.当月值              1.281e+05  5.467e+04   2.343  0.02777 *  
+价格.螺纹钢.HRB400.20mm.郑州  3.312e+05  2.179e+04  15.202 8.11e-14 ***
+成交金额.上海.螺纹钢.当月值   7.694e+03  2.661e+03   2.891  0.00803 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 69730000 on 24 degrees of freedom
+Multiple R-squared:  0.9393,	Adjusted R-squared:  0.9317 
+F-statistic: 123.7 on 3 and 24 DF,  p-value: 9.873e-15
+
+                 (Intercept)             产量.火电.当月值 
+               -1.371774e+09                 1.280750e+05 
+价格.螺纹钢.HRB400.20mm.郑州  成交金额.上海.螺纹钢.当月值 
+                3.311997e+05                 7.694308e+03 

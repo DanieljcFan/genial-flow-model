@@ -1,0 +1,31 @@
+
+Call:
+lm(formula = netin ~ ., data = dat_engine[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-14142873  -4530684   2218449   3805618   9654275 
+
+Coefficients:
+                                    Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                       -2.610e+08  5.631e+07  -4.634 0.001678 ** 
+申万行业指数.磁性材料_lag4        -3.250e+04  3.859e+03  -8.421 3.01e-05 ***
+出口数量.洗衣机电机.当月值         9.270e+05  1.487e+05   6.234 0.000250 ***
+申万行业指数.稀土_lag4             1.867e+04  3.329e+03   5.607 0.000506 ***
+产量.节能与新能源汽车.当月值_lag4  8.701e+02  1.906e+02   4.566 0.001836 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9037000 on 8 degrees of freedom
+Multiple R-squared:  0.9183,	Adjusted R-squared:  0.8774 
+F-statistic: 22.47 on 4 and 8 DF,  p-value: 0.0002085
+
+                      (Intercept)        申万行业指数.磁性材料_lag4        出口数量.洗衣机电机.当月值 
+                    -2.609598e+08                     -3.249884e+04                      9.270073e+05 
+           申万行业指数.稀土_lag4 产量.节能与新能源汽车.当月值_lag4 
+                     1.866586e+04                      8.701315e+02 
+[1] "置信区间:"
+        fit    lwr      upr
+14 11884859 638718 23131001
+[1] "标准差:"
+[1] 4876896

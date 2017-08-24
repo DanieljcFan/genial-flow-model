@@ -1,0 +1,29 @@
+
+Call:
+lm(formula = cost ~ ., data = dat_glass[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-76385194 -22748875  -6367546  18968876  76010901 
+
+Coefficients:
+                                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                         2.988e+08  7.143e+07   4.183 0.000386 ***
+y_lag4                              9.995e-01  6.146e-02  16.263 9.55e-14 ***
+期货结算价.活跃合约..IPE英国天然气 -3.834e+06  8.384e+05  -4.574 0.000149 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 37760000 on 22 degrees of freedom
+Multiple R-squared:  0.9659,	Adjusted R-squared:  0.9628 
+F-statistic: 311.8 on 2 and 22 DF,  p-value: < 2.2e-16
+
+                       (Intercept)                             y_lag4 
+                      2.987775e+08                       9.994762e-01 
+期货结算价.活跃合约..IPE英国天然气 
+                     -3.834489e+06 
+[1] "置信区间:"
+          fit        lwr        upr
+26 1126752883 1082194624 1171311142
+[1] "标准差:"
+[1] 21485529

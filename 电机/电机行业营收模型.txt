@@ -1,0 +1,30 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_engine[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-72738603 -46274209 -10479638  50831988 100813520 
+
+Coefficients:
+                                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                         2590288062  455317706   5.689 0.000298 ***
+产量.洗衣机电机.当月值                -3741231     535577  -6.985 6.43e-05 ***
+进口金额.电动机及发电机.当月值_lag4      43183       7956   5.428 0.000417 ***
+产量.节能与新能源汽车.当月值_lag1         2736       1232   2.222 0.053416 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 65740000 on 9 degrees of freedom
+Multiple R-squared:  0.9169,	Adjusted R-squared:  0.8892 
+F-statistic: 33.11 on 3 and 9 DF,  p-value: 3.429e-05
+
+                        (Intercept)              产量.洗衣机电机.当月值 进口金额.电动机及发电机.当月值_lag4 
+                       2.590288e+09                       -3.741231e+06                        4.318290e+04 
+  产量.节能与新能源汽车.当月值_lag1 
+                       2.735946e+03 
+[1] "置信区间:"
+         fit       lwr       upr
+14 708325129 600035250 816615008
+[1] "标准差:"
+[1] 47870184

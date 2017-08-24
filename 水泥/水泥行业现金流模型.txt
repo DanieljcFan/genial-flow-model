@@ -1,0 +1,30 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_cement[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-176870233  -82960838    2109201   55208593  234553827 
+
+Coefficients:
+                                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                      -37998589  274099980  -0.139   0.8911    
+水泥.产量.累计值                     12364       2436   5.076 5.01e-05 ***
+水泥价格_lag4                     -1216940     475826  -2.558   0.0183 *  
+秦皇岛港.平仓价.普通混煤.Q4500K.    542395     229875   2.360   0.0281 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 117100000 on 21 degrees of freedom
+Multiple R-squared:  0.6247,	Adjusted R-squared:  0.571 
+F-statistic: 11.65 on 3 and 21 DF,  p-value: 0.0001043
+
+                     (Intercept)                 水泥.产量.累计值                    水泥价格_lag4 
+                    -37998588.70                         12364.18                      -1216940.22 
+秦皇岛港.平仓价.普通混煤.Q4500K. 
+                       542395.11 
+[1] "置信区间:"
+         fit       lwr       upr
+26 679810126 573150610 786469641
+[1] "标准差:"
+[1] 51288135

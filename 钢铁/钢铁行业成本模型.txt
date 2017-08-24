@@ -1,0 +1,29 @@
+
+Call:
+lm(formula = cost ~ ., data = dat_steel[, c(0, index[-c(2:3)]) + 
+    1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-1.278e+09 -5.698e+07  6.179e+07  2.730e+08  5.725e+08 
+
+Coefficients:
+                                             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                                -4.434e+09  2.292e+09  -1.935 0.067276 .  
+MySpic指数.螺纹                             4.222e+07  5.279e+06   7.997 1.17e-07 ***
+钢材.销量.累计值                            2.854e+05  8.632e+04   3.306 0.003530 ** 
+固定资产投资完成额.黑色金属矿采选业.累计值 -4.207e+06  1.096e+06  -3.837 0.001030 ** 
+产量.铁矿石原矿量.当月值                    4.517e+05  1.063e+05   4.249 0.000393 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 495400000 on 20 degrees of freedom
+Multiple R-squared:  0.9029,	Adjusted R-squared:  0.8835 
+F-statistic: 46.52 on 4 and 20 DF,  p-value: 7.44e-10
+
+                               (Intercept)                            MySpic指数.螺纹 
+                             -4433880274.9                                 42215414.9 
+                          钢材.销量.累计值 固定资产投资完成额.黑色金属矿采选业.累计值 
+                                  285351.2                                 -4207311.4 
+                  产量.铁矿石原矿量.当月值 
+                                  451689.5 

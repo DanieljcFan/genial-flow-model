@@ -1,0 +1,30 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_whitewine[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-223636750 -123609472  -26873394  112223094  263594048 
+
+Coefficients:
+                                               Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                                  3260496440  664502546   4.907 0.000840 ***
+seasonQ3                                      470433181  120620388   3.900 0.003619 ** 
+价格.白酒.30年青花汾酒.53度..500ml.京东_lag4   -8012592    1448996  -5.530 0.000366 ***
+价格.白酒.泸州老窖.52度..500ml.京东_lag4        8996437    3449578   2.608 0.028364 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 182100000 on 9 degrees of freedom
+Multiple R-squared:  0.8506,	Adjusted R-squared:  0.8008 
+F-statistic: 17.08 on 3 and 9 DF,  p-value: 0.000467
+
+                                 (Intercept)                                     seasonQ3 
+                                  3260496440                                    470433181 
+价格.白酒.30年青花汾酒.53度..500ml.京东_lag4     价格.白酒.泸州老窖.52度..500ml.京东_lag4 
+                                    -8012592                                      8996437 
+[1] "置信区间:"
+         fit       lwr        upr
+14 869656944 652359593 1086954295
+[1] "标准差:"
+[1] 96057584

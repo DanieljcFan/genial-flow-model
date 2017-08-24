@@ -1,0 +1,28 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_copper[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-297255617 -122317463  -54094600  146886759  360868765 
+
+Coefficients:
+                        Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            4.477e+07  3.761e+08   0.119 0.906381    
+房屋新开工面积.累计值  1.435e+04  4.650e+03   3.086 0.005599 ** 
+进口铜材_lag1          1.412e+02  3.575e+01   3.949 0.000733 ***
+进口精炼铜            -1.654e+00  7.448e-01  -2.220 0.037540 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 191800000 on 21 degrees of freedom
+Multiple R-squared:  0.6461,	Adjusted R-squared:  0.5955 
+F-statistic: 12.78 on 3 and 21 DF,  p-value: 5.714e-05
+
+          (Intercept) 房屋新开工面积.累计值         进口铜材_lag1            进口精炼铜 
+         4.476744e+07          1.434907e+04          1.411879e+02         -1.653579e+00 
+[1] "置信区间:"
+         fit       lwr       upr
+26 364925283 238403191 491447375
+[1] "标准差:"
+[1] 60839224

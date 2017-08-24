@@ -1,0 +1,30 @@
+
+Call:
+lm(formula = cost ~ ., data = dat_rubber[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-235330966  -71341485   -2481052   74941776  272695661 
+
+Coefficients:
+                                                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                                     1777439280  364415163   4.878 8.01e-05 ***
+进口数量.硫化橡胶制避孕套.40141000..当月值_lag1    3221557     653863   4.927 7.12e-05 ***
+申万行业指数.橡胶_lag1                               88953      30252   2.940  0.00781 ** 
+产量.乙烯.当月值                                 -12631064    3333306  -3.789  0.00107 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 132400000 on 21 degrees of freedom
+Multiple R-squared:  0.8116,	Adjusted R-squared:  0.7847 
+F-statistic: 30.15 on 3 and 21 DF,  p-value: 8.426e-08
+
+                                    (Intercept) 进口数量.硫化橡胶制避孕套.40141000..当月值_lag1 
+                                  1777439279.63                                      3221557.20 
+                         申万行业指数.橡胶_lag1                                产量.乙烯.当月值 
+                                       88952.85                                    -12631063.49 
+[1] "置信区间:"
+          fit        lwr        upr
+26 1470064179 1346067018 1594061339
+[1] "标准差:"
+[1] 59625089

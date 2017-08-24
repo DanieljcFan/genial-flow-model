@@ -1,0 +1,32 @@
+
+Call:
+lm(formula = netin ~ ., data = dat_whitewine[, c(0, index) + 
+    1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-35409382 -13739401  -1334958  22008177  32011585 
+
+Coefficients:
+                                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                            -198047503  340540753  -0.582  0.57687    
+产量.白酒.当月值_lag1                    11485495     878656  13.072 1.11e-06 ***
+价格.白酒.剑南春.52度..500ml.京东        -2646187     690998  -3.830  0.00502 ** 
+价格.白酒.五粮液.52度..500ml.京东_lag1     842449     179202   4.701  0.00154 ** 
+申万行业指数.白酒_lag4                     -20744       6176  -3.359  0.00995 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 29430000 on 8 degrees of freedom
+Multiple R-squared:  0.979,	Adjusted R-squared:  0.9686 
+F-statistic: 93.41 on 4 and 8 DF,  p-value: 9.493e-07
+
+                           (Intercept)                  产量.白酒.当月值_lag1      价格.白酒.剑南春.52度..500ml.京东 
+                         -198047502.84                            11485495.14                            -2646187.24 
+价格.白酒.五粮液.52度..500ml.京东_lag1                 申万行业指数.白酒_lag4 
+                             842449.39                              -20744.34 
+[1] "置信区间:"
+         fit       lwr       upr
+14 730515334 666255840 794774828
+[1] "标准差:"
+[1] 27866166

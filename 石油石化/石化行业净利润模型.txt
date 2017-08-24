@@ -1,0 +1,37 @@
+
+Call:
+lm(formula = netin ~ ., data = dat_petro[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-359213667  -94539607   26446458  139046213  284876729 
+
+Coefficients:
+                                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                         1.765e+09  6.383e+08   2.766 0.012739 *  
+seasonQ2                            3.335e+08  1.187e+08   2.810 0.011575 *  
+seasonQ3                            1.370e+08  1.260e+08   1.087 0.291368    
+申万行业指数.石油化工_lag4          2.597e+05  1.262e+05   2.057 0.054489 .  
+y_lag4                              6.161e-01  1.492e-01   4.130 0.000629 ***
+现货价.中间价..乙烯.CFR东北亚_lag1 -1.186e+06  3.377e+05  -3.514 0.002479 ** 
+市场价.平均价..丁酮.华南地区_lag4  -8.461e+04  1.774e+04  -4.770 0.000153 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 228400000 on 18 degrees of freedom
+Multiple R-squared:  0.8191,	Adjusted R-squared:  0.7588 
+F-statistic: 13.59 on 6 and 18 DF,  p-value: 7.993e-06
+
+                       (Intercept)                           seasonQ2 
+                      1.765323e+09                       3.335374e+08 
+                          seasonQ3         申万行业指数.石油化工_lag4 
+                      1.370195e+08                       2.596581e+05 
+                            y_lag4 现货价.中间价..乙烯.CFR东北亚_lag1 
+                      6.161004e-01                      -1.186496e+06 
+ 市场价.平均价..丁酮.华南地区_lag4 
+                     -8.461443e+04 
+[1] "置信区间:"
+          fit        lwr        upr
+26 2212436872 1592495241 2832378503
+[1] "标准差:"
+[1] 295080740

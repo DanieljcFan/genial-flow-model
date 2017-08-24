@@ -1,0 +1,29 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_engine[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-91405661 -40222184  16807241  39478893  97833501 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)   
+(Intercept)            -144591494   35234471  -4.104  0.00342 **
+seasonQ2                196460153   54947186   3.575  0.00724 **
+seasonQ3                190185220   55432469   3.431  0.00894 **
+seasonQ4                266986465   78758435   3.390  0.00950 **
+产量.纯电动客车.当月值      11540       4231   2.728  0.02594 * 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 70020000 on 8 degrees of freedom
+Multiple R-squared:  0.9001,	Adjusted R-squared:  0.8501 
+F-statistic: 18.01 on 4 and 8 DF,  p-value: 0.0004588
+
+           (Intercept)               seasonQ2               seasonQ3               seasonQ4 产量.纯电动客车.当月值 
+         -144591494.01           196460153.45           190185220.15           266986465.37               11540.48 
+[1] "置信区间:"
+        fit       lwr       upr
+14 81200721 -12990844 175392286
+[1] "标准差:"
+[1] 40846226

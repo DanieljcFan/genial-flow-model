@@ -1,0 +1,33 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_glass[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-57115272 -17975458  -3342459  24089981  67320699 
+
+Coefficients:
+                                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                             -261634138  103817033  -2.520 0.020835 *  
+现货价.天然气.俄罗斯产..德国港口_lag1    -20555042    4993084  -4.117 0.000587 ***
+房地产开发投资完成额.累计值                   8782       1847   4.755 0.000138 ***
+期货结算价.活跃合约..IPE英国天然气_lag1    4968805    1458647   3.406 0.002961 ** 
+申万行业指数.纯碱_lag4                       43278      14567   2.971 0.007852 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 33370000 on 19 degrees of freedom
+Multiple R-squared:  0.7397,	Adjusted R-squared:  0.685 
+F-statistic:  13.5 on 4 and 19 DF,  p-value: 2.243e-05
+
+                            (Intercept)   现货价.天然气.俄罗斯产..德国港口_lag1 
+                          -2.616341e+08                           -2.055504e+07 
+            房地产开发投资完成额.累计值 期货结算价.活跃合约..IPE英国天然气_lag1 
+                           8.782163e+03                            4.968805e+06 
+                 申万行业指数.纯碱_lag4 
+                           4.327780e+04 
+[1] "置信区间:"
+         fit       lwr       upr
+25 227017158 179134185 274900131
+[1] "标准差:"
+[1] 22877412

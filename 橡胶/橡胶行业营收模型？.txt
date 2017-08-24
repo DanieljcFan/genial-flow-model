@@ -1,0 +1,33 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_rubber[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-233059346 -115698699   21594474   86602535  186251529 
+
+Coefficients:
+                                                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                                      91072750  138177634   0.659 0.517350    
+seasonQ2                                        147752580   63904763   2.312 0.031547 *  
+seasonQ3                                        300495522   65407209   4.594 0.000176 ***
+进口数量.硫化橡胶制避孕套.40141000..当月值_lag1   2425541     384433   6.309 3.69e-06 ***
+进口数量.合成橡胶.当月值_lag4                    32571647    9331477   3.491 0.002305 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 125300000 on 20 degrees of freedom
+Multiple R-squared:  0.8412,	Adjusted R-squared:  0.8095 
+F-statistic:  26.5 on 4 and 20 DF,  p-value: 9.571e-08
+
+                                    (Intercept)                                        seasonQ2 
+                                       91072750                                       147752580 
+                                       seasonQ3 进口数量.硫化橡胶制避孕套.40141000..当月值_lag1 
+                                      300495522                                         2425540 
+                  进口数量.合成橡胶.当月值_lag4 
+                                       32571647 
+[1] "置信区间:"
+          fit        lwr        upr
+26 1877937946 1592809311 2163066581
+[1] "标准差:"
+[1] 136689181

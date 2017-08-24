@@ -1,0 +1,31 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_whitewine[, c(0, index) + 
+    1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-172526106  -51126782   18749360   51115160   85417561 
+
+Coefficients:
+                                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                            -3.848e+09  3.540e+08 -10.868 1.78e-06 ***
+产量.白酒.当月值_lag1                   2.349e+07  2.387e+06   9.842 4.09e-06 ***
+价格.白酒.五粮液.52度..500ml.京东_lag1  1.829e+06  4.644e+05   3.939 0.003410 ** 
+白酒.折65度..销量.累计值                5.293e+06  8.261e+05   6.407 0.000124 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 86240000 on 9 degrees of freedom
+Multiple R-squared:  0.9665,	Adjusted R-squared:  0.9553 
+F-statistic: 86.57 on 3 and 9 DF,  p-value: 5.875e-07
+
+                           (Intercept)                  产量.白酒.当月值_lag1 价格.白酒.五粮液.52度..500ml.京东_lag1 
+                           -3847621700                               23487573                                1829238 
+              白酒.折65度..销量.累计值 
+                               5292897 
+[1] "置信区间:"
+          fit        lwr        upr
+14 2339087218 2153730882 2524443555
+[1] "标准差:"
+[1] 81937869

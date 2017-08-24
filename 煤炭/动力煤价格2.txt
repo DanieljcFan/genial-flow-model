@@ -1,0 +1,29 @@
+
+Call:
+lm(formula = price ~ ., data = dat_coal[, index[-c(2, 4, 6, 9)]])
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-76.320 -31.016  -4.781  21.866  85.058 
+
+Coefficients:
+                                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                          1.027e+01  3.410e+01   0.301  0.76430    
+焦炭平均库存可用天数.国内大中型钢厂 -6.270e+00  2.462e+00  -2.546  0.01357 *  
+价格.螺纹钢.HRB400.20mm.郑州         9.337e-02  1.861e-02   5.018 5.26e-06 ***
+欧洲ARA港动力煤现货价                4.069e+00  6.931e-01   5.870 2.23e-07 ***
+进口数量.动力煤.当月值              -7.156e-06  2.644e-06  -2.707  0.00891 ** 
+尿素平均价                           5.978e-02  2.799e-02   2.135  0.03696 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 39.95 on 58 degrees of freedom
+Multiple R-squared:  0.9211,	Adjusted R-squared:  0.9143 
+F-statistic: 135.4 on 5 and 58 DF,  p-value: < 2.2e-16
+
+                        (Intercept) 焦炭平均库存可用天数.国内大中型钢厂 
+                       1.027235e+01                       -6.269514e+00 
+       价格.螺纹钢.HRB400.20mm.郑州               欧洲ARA港动力煤现货价 
+                       9.337498e-02                        4.068518e+00 
+             进口数量.动力煤.当月值                          尿素平均价 
+                      -7.156197e-06                        5.977981e-02 
