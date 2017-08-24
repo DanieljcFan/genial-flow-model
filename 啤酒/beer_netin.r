@@ -8,7 +8,7 @@ library(reshape2) #mdataframe reshape
 #load company report####
 #dataframe重命名：行业、财务指标
 #修改从报表中提取的指标
-load("I:/work/genial-flow/report.rda")
+load("E:/FJC/report.rda")
 index <- grep('啤酒', report$申万三级)
 beer <- report[index,]
 report_clean <- function(name, time, y){
@@ -70,7 +70,7 @@ names(netin) <- c('time', 'netin')
 #更改路径至该行业的文件夹
 #读入数据，需对Excel表做预处理
 #注意时间列的格式（‘/’分割 or ‘-’分割）
-setwd("I:/work/genial-flow/啤酒/")
+setwd("E:/FJC/啤酒/")
 chain <- read.csv('啤酒1.csv')
 names(chain)[1] <- 'time'
 chain$time <- as.POSIXlt(chain$time, format = '%Y-%m-%d')

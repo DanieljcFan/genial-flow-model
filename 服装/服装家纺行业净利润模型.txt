@@ -1,0 +1,31 @@
+
+Call:
+lm(formula = netin ~ ., data = dat_cloth[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-12096880  -7793873  -2200907   6663081  16439534 
+
+Coefficients:
+                                Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                   -7.389e+07  2.214e+07  -3.337 0.003285 ** 
+出口数量.裘皮服装.累计值_lag2  3.447e+04  5.421e+03   6.358 3.33e-06 ***
+零售额.服装类.当月值_lag1      8.463e+04  1.861e+04   4.548 0.000196 ***
+出口数量.皮革服装.累计值_lag4  1.435e+05  2.923e+04   4.909 8.48e-05 ***
+y_lag3                         2.334e-01  9.851e-02   2.369 0.028009 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9786000 on 20 degrees of freedom
+Multiple R-squared:  0.8064,	Adjusted R-squared:  0.7677 
+F-statistic: 20.83 on 4 and 20 DF,  p-value: 6.693e-07
+
+                  (Intercept) 出口数量.裘皮服装.累计值_lag2     零售额.服装类.当月值_lag1 
+                -7.389105e+07                  3.446575e+04                  8.462979e+04 
+出口数量.皮革服装.累计值_lag4                        y_lag3 
+                 1.434815e+05                  2.333806e-01 
+[1] "置信区间:"
+        fit      lwr      upr
+26 86852460 78617301 95087619
+[1] "标准差:"
+[1] 3947892

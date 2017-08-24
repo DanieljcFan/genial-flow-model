@@ -9,8 +9,8 @@ library(reshape2) #mdataframe reshape
 #dataframe重命名：行业、财务指标
 #修改从报表中提取的指标
 load("E:/FJC/report.rda")
-index <- grep('水泥', report$申万二级)
-cement <- report[index,]
+index <- grep('服装', report$申万二级)
+cloth <- report[index,]
 report_clean <- function(name, time, y){
   #report_clean 函数处理公司季报，计算各季度财务指标的变化。对于季报残缺不齐的用平均法补齐
   #默认报告期为每季度末，输出后会将所有31号改为30号
@@ -48,8 +48,8 @@ report_clean <- function(name, time, y){
   index_3 <- c(index4[c(1:length(index4))%%4 == 1])
   
   index_1 <- index_1[!is.na(index_1)]
-  index_2 <- index_2[!is.na(index_2)]
-  index_3 <- index_3[!is.na(index_3)]
+  index_2 <- index_1[!is.na(index_2)]
+  index_3 <- index_1[!is.na(index_3)]
   
   time[index_1] <- time[index_1] - months(3)
   time[index_2] <- time[index_2] - months(6)
@@ -59,7 +59,7 @@ report_clean <- function(name, time, y){
   return(de_y)
 }
 
-netin <- report_clean(cement$corp_name, cement$report_period, cement$净利润)
+netin <- report_clean(cloth$corp_name, cloth$report_period, cloth$净利润)
 netin[netin == 0] <- NA
 netin <- netin[order(netin$time),]
 netin <- aggregate(netin$y, by=list(as.yearqtr(netin$time)), mean, na.rm = T)
@@ -70,8 +70,8 @@ names(netin) <- c('time', 'netin')
 #更改路径至该行业的文件夹
 #读入数据，需对Excel表做预处理
 #注意时间列的格式（‘/’分割 or ‘-’分割）
-setwd("E:/FJC/水泥/")
-chain <- read.csv('水泥1.csv')
+setwd("E:/FJC/服装/")
+chain <- read.csv('服装家纺.csv')
 names(chain)[1] <- 'time'
 chain$time <- as.POSIXlt(chain$time, format = '%Y-%m-%d')
 
@@ -105,20 +105,16 @@ chain_season <- Ave(chain[, -grep('累[积计]', names(chain))], ac=F)
 tmp <- Ave(chain[, c(1,grep('累[积计]', names(chain)))], ac=T)
 chain_season <- merge(chain_season, tmp, by='time')
 
-# #各省产量加总
-# index <- grep('产量.水泥', names(chain_season))
-# chain_season$水泥产量 <- rowSums(chain_season[,index])
-# chain_season <- chain_season[,-index]
-# 
-# #补充变量
-# tmp <- read.csv('水泥成本.csv')
+
+#补充变量
+# tmp <- read.csv('纺织服装成本.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y-%m-%d')
 # tmp <- Ave(tmp)
 # chain_season <- merge(chain_season, tmp, by='time')
-# 
+
 # #补充变量
-# tmp <- read.csv('水泥营收.csv')
+# tmp <- read.csv('纺织服装营收.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y/%m/%d')
 # tmp1 <- Ave(tmp[,-grep('累[积计]', names(tmp))])
@@ -127,11 +123,11 @@ chain_season <- merge(chain_season, tmp, by='time')
 # chain_season <- merge(chain_season, tmp)
 
 
+
 #删除缺失的变量
-chain_season <- chain_season[chain_season$time < 2017.5,]
+chain_season <- chain_season[chain_season$time <= 2017.5,]
 chain_season[chain_season == 0] <- NA
 na1 <- apply(chain_season, 2, function(x){sum(is.na(x))>0.5})
-# names(chain_season)[which(na1)]
 chain_season <- chain_season[,!na1]
 
 #merge X and Y ####
@@ -161,9 +157,9 @@ y_lag4 <- data.frame(time=netin$time + 1, y_lag4=netin$netin)
 X_all <- merge(y_lag1,merge(y_lag2,merge(y_lag3,merge(y_lag4,X_all))))
 X_all$season <- as.factor(sub('0','1',quarters(X_all$time)))
 
-dat_cement <- merge(netin,X_all)
-t <- dat_cement[,1]
-dat_cement <- dat_cement[,-1]
+dat_cloth <- merge(netin,X_all)
+t <- dat_cloth[,1]
+dat_cloth <- dat_cloth[,-1]
 
 #model#####
 
@@ -210,45 +206,42 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
   return(list(model=model,index=index))
 }
 
-m <- Model(dat_cement$netin,
-           dat_cement[-1],
-           vif=5,
-           must = ncol(dat_cement)-1,
+m <- Model(dat_cloth$netin,
+           dat_cloth[-1],
+           vif=10,
+           # must = ncol(dat_cloth)-1,
            method = 'aic'
 )
 
-mean(abs(m$model$residuals/dat_cement$netin))
+mean(abs(m$model$residuals/dat_cloth$netin))
 summary(m$model)
 vif(m$model)
 
 df <- data.frame(time=t,
-                 actual=dat_cement$netin,
+                 actual=dat_cloth$netin,
                  pred=m$model$fitted.values)
 df <- melt(df, id='time')
-ggplot(df, aes(time, value, color=variable)) + geom_line() +
-  labs(title = '水泥行业净利润')
+ggplot(df, aes(time, value, color=variable)) + geom_line()
 
-
-# tmp <- dat_cement[,m$index+1]
+# tmp <- dat_cloth[,m$index+1]
 # names(tmp) <- ''
 # corr <- cor(tmp)
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
-index <- m$index[-c(2,4)]
-lm1 <- lm(netin~., data = dat_cement[,c(0,index)+1])
-mean(abs(lm1$residuals/dat_cement$netin))
+index <- m$index[-c(2,4,6,7,9,10)]
+lm1 <- lm(netin~., data = dat_cloth[,c(0,index)+1])
+mean(abs(lm1$residuals/dat_cloth$netin))
 summary(lm1)
 vif(lm1)
 
 pred <- predict(lm1,X_all[X_all$time == '2017 Q2',index+1],se.fit = T,interval = 'confidence')
 df <- data.frame(time=t,
-                 actual=dat_cement$netin,
+                 actual=dat_cloth$netin,
                  pred=lm1$fitted.values)
 # df <- melt(df, id='time')
-# ggplot(df, aes(time, value, color=variable)) + geom_line() +
-#    labs(title = '水泥行业净利润')
-# write.csv(df, file = '水泥行业净利润.csv')
-# sink('水泥行业净利润模型.txt')
+# ggplot(df, aes(time, value, color=variable)) + geom_line()
+# write.csv(df, file = '服装家纺行业净利润.csv')
+# sink('服装家纺行业净利润模型.txt')
 # summary(lm1)
 # lm1$coefficients
 # print('置信区间:')

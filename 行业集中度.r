@@ -24,3 +24,7 @@ write.csv(tmp[,c(2,4,22)] ,file='白色家电-营业总收入.csv',row.names=F)
 index <- grep('包装印刷', report$申万二级)
 tmp <- report[index,]
 write.csv(tmp[,c(2,4,22)] ,file='包装印刷-营业总收入.csv',row.names=F)
+
+index <- grep('电机', report$申万二级)
+tmp <- report[index,]
+write.csv(tmp[,c(2,4,22)] ,file='电机-营业总收入.csv',row.names=F)
