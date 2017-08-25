@@ -9,7 +9,7 @@ library(reshape2) #mdataframe reshape
 #dataframe重命名：行业、财务指标
 #修改从报表中提取的指标
 load("E:/FJC/report.rda")
-index <- grep('纺织', report$申万二级)
+index <- grep('棉纺', report$申万三级)
 textile <- report[index,]
 report_clean <- function(name, time, y){
   #report_clean 函数处理公司季报，计算各季度财务指标的变化。对于季报残缺不齐的用平均法补齐
@@ -229,7 +229,7 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
 m <- Model(dat_textile$cost,
            dat_textile[-1],
            vif=10,
-           must = ncol(dat_textile)-1,
+           # must = ncol(dat_textile)-1,
            method = 'aic'
 )
 

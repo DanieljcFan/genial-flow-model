@@ -1,0 +1,28 @@
+
+Call:
+lm(formula = cost ~ ., data = dat_petro[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-4.485e+09 -2.509e+09 -9.700e+08  1.576e+09  8.573e+09 
+
+Coefficients:
+                              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                  1.588e+10  3.159e+09   5.028 5.62e-05 ***
+seasonQ2                    -5.899e+09  1.876e+09  -3.144 0.004899 ** 
+seasonQ4                    -1.142e+10  1.889e+09  -6.047 5.31e-06 ***
+现货价.中间价..丙烯.FOB韩国  1.087e+07  2.609e+06   4.166 0.000437 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.795e+09 on 21 degrees of freedom
+Multiple R-squared:  0.7472,	Adjusted R-squared:  0.7111 
+F-statistic: 20.69 on 3 and 21 DF,  p-value: 1.778e-06
+
+                (Intercept)                    seasonQ2                    seasonQ4 现货价.中间价..丙烯.FOB韩国 
+                15881218798                 -5899320222                -11421187444                    10867885 
+[1] "置信区间:"
+           fit         lwr         upr
+26 18864152390 15079153195 22649151585
+[1] "标准差:"
+[1] 1820049046

@@ -152,7 +152,7 @@ y_lag2 <- data.frame(time=cash$time + 0.5, y_lag2=cash$cash)
 y_lag3 <- data.frame(time=cash$time + 0.75, y_lag3=cash$cash)
 y_lag4 <- data.frame(time=cash$time + 1, y_lag4=cash$cash)
 X_all <- merge(y_lag1,merge(y_lag2,merge(y_lag3,merge(y_lag4,X_all))))
-X_all$season <- as.factor(sub('0','2',quarters(X_all$time)))
+X_all$season <- as.factor(sub('4','1',quarters(X_all$time)))
 
 dat_paper <- merge(cash,X_all)
 t <- dat_paper[,1]
@@ -206,7 +206,7 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
 m <- Model(dat_paper$cash,
            dat_paper[-1],
            vif=5,
-           must = ncol(dat_paper)-1,
+           # must = ncol(dat_paper)-1,
            method = 'aic'
 )
 
@@ -226,7 +226,7 @@ ggplot(df, aes(time, value, color=variable)) + geom_line() +
 # corr <- cor(tmp)
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
-index <- m$index[-c(3,5,6)]
+index <- m$index[-c(2,6,7,8,9)]
 lm1 <- lm(cash~., data = dat_paper[,c(0,index)+1])
 mean(abs(lm1$residuals/dat_paper$cash))
 summary(lm1)

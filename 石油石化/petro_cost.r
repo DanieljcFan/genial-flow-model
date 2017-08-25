@@ -2,14 +2,15 @@ library(ggplot2)
 library(lubridate) # date management
 library(zoo) #date management
 library(corrplot) #covariance visualization
+library(glmnet) #lasso regression
 library(car) #vif detection
 library(reshape2) #mdataframe reshape
 #load company report####
 #dataframe重命名：行业、财务指标
 #修改从报表中提取的指标
 load("E:/FJC/report.rda")
-index <- grep('水泥', report$申万二级)
-cement <- report[index,]
+index <- grep('石油化工', report$申万二级)
+petro <- report[index,]
 report_clean <- function(name, time, y){
   #report_clean 函数处理公司季报，计算各季度财务指标的变化。对于季报残缺不齐的用平均法补齐
   #默认报告期为每季度末，输出后会将所有31号改为30号
@@ -47,8 +48,8 @@ report_clean <- function(name, time, y){
   index_3 <- c(index4[c(1:length(index4))%%4 == 1])
   
   index_1 <- index_1[!is.na(index_1)]
-  index_2 <- index_2[!is.na(index_2)]
-  index_3 <- index_3[!is.na(index_3)]
+  index_2 <- index_1[!is.na(index_2)]
+  index_3 <- index_1[!is.na(index_3)]
   
   time[index_1] <- time[index_1] - months(3)
   time[index_2] <- time[index_2] - months(6)
@@ -58,19 +59,19 @@ report_clean <- function(name, time, y){
   return(de_y)
 }
 
-netin <- report_clean(cement$corp_name, cement$report_period, cement$净利润)
-netin[netin == 0] <- NA
-netin <- netin[order(netin$time),]
-netin <- aggregate(netin$y, by=list(as.yearqtr(netin$time)), mean, na.rm = T)
-names(netin) <- c('time', 'netin')
-# netin
+cost <- report_clean(petro$corp_name, petro$report_period,petro$营业总成本)
+cost[cost == 0] <- NA
+cost <- cost[order(cost$time),]
+cost <- aggregate(cost$y, by=list(as.yearqtr(cost$time)), mean, na.rm = T)
+names(cost) <- c('time', 'cost')
+# cost
 
 #load chain factors######
 #更改路径至该行业的文件夹
 #读入数据，需对Excel表做预处理
 #注意时间列的格式（‘/’分割 or ‘-’分割）
-setwd("E:/FJC/水泥/")
-chain <- read.csv('水泥1.csv')
+setwd("E:/FJC/石油石化/")
+chain <- read.csv('石油石化.csv')
 names(chain)[1] <- 'time'
 chain$time <- as.POSIXlt(chain$time, format = '%Y-%m-%d')
 
@@ -100,37 +101,22 @@ Ave <- function(dat, t=1, type='season', ac = F){
   names(df) <- c('time',names(dat)[-1])
   return(df)
 }
-chain_season <- Ave(chain[, -grep('累[积计]', names(chain))], ac=F)
-tmp <- Ave(chain[, c(1,grep('累[积计]', names(chain)))], ac=T)
-chain_season <- merge(chain_season, tmp, by='time')
+chain_season <- Ave(chain, ac=F)
 
-# #各省产量加总
-# index <- grep('产量.水泥', names(chain_season))
-# chain_season$水泥产量 <- rowSums(chain_season[,index])
-# chain_season <- chain_season[,-index]
-# 
+
 # #补充变量
-# tmp <- read.csv('水泥成本.csv')
+# tmp <- read.csv('石化成本.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y-%m-%d')
 # tmp <- Ave(tmp)
 # chain_season <- merge(chain_season, tmp, by='time')
-# 
-# #补充变量
-# tmp <- read.csv('水泥营收.csv')
-# names(tmp)[1] <- 'time'
-# tmp$time <- as.POSIXlt(tmp$time, format='%Y/%m/%d')
-# tmp1 <- Ave(tmp[,-grep('累[积计]', names(tmp))])
-# chain_season <- merge(chain_season, tmp1, by='time')
-# tmp <- Ave(tmp[,c(1,grep('累[积计]', names(tmp)))], ac=T)
-# chain_season <- merge(chain_season, tmp)
+
 
 
 #删除缺失的变量
 chain_season <- chain_season[chain_season$time < 2017.5,]
 chain_season[chain_season == 0] <- NA
 na1 <- apply(chain_season, 2, function(x){sum(is.na(x))>0.5})
-# names(chain_season)[which(na1)]
 chain_season <- chain_season[,!na1]
 
 #merge X and Y ####
@@ -150,22 +136,21 @@ X_lag4$time <- X_lag4$time + 1
 names(X_lag4)[-1] <- paste0(names(X)[-1],'_lag4')
 
 X_all <- merge(merge(merge(merge(X, X_lag1),X_lag2),X_lag3),X_lag4)
-y_lag1 <- data.frame(time=netin$time + 0.25, y_lag1=netin$netin)
-y_lag2 <- data.frame(time=netin$time + 0.5, y_lag2=netin$netin)
-y_lag3 <- data.frame(time=netin$time + 0.75, y_lag3=netin$netin)
-y_lag4 <- data.frame(time=netin$time + 1, y_lag4=netin$netin)
+y_lag1 <- data.frame(time=cash$time + 0.25, y_lag1=cash$cash)
+y_lag2 <- data.frame(time=cash$time + 0.5, y_lag2=cash$cash)
+y_lag3 <- data.frame(time=cash$time + 0.75, y_lag3=cash$cash)
+y_lag4 <- data.frame(time=cash$time + 1, y_lag4=cash$cash)
 X_all <- merge(y_lag1,merge(y_lag2,merge(y_lag3,merge(y_lag4,X_all))))
-X_all$season <- as.factor(sub('0','1',quarters(X_all$time))) #sub可将不同季度合并，减少变量数
+X_all$season <- as.factor(sub('3','1',quarters(X_all$time))) #sub可将不同季度合并，减少变量数
 
-#合并X,Y，时间戳另存为t
-dat_cement <- merge(netin,X_all)
-t <- dat_cement[,1] 
-dat_cement <- dat_cement[,-1]
+dat_petro <- merge(cost,X_all)
+t <- dat_petro[,1]
+dat_petro <- dat_petro[,-1]
 
 #model#####
 
 #model函数通过marginal-r2筛选自变量，利用vif限制自相关性
-#must为手动设定的必须加入模型的变量列号，注意这时已剔除Y
+#must为手动设定的必须加入模型的变量列号
 #输出$mode为模型，$index为入选模型的自变量列号
 Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
   sst <- var(Y)
@@ -207,47 +192,42 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
   return(list(model=model,index=index))
 }
 
-m <- Model(dat_cement$netin,
-           dat_cement[-1],
+m <- Model(dat_petro$cost,
+           dat_petro[-1],
            vif=5,
-           must = ncol(dat_cement)-1,
+           must = ncol(dat_petro)-1,
            method = 'aic'
 )
 
-mean(abs(m$model$residuals/dat_cement$netin)) #相对误差
-summary(m$model) 
+mean(abs(m$model$residuals/dat_petro$cost))
+summary(m$model)
 vif(m$model)
 
 df <- data.frame(time=t,
-                 actual=dat_cement$netin,
+                 actual=dat_petro$cost,
                  pred=m$model$fitted.values)
 df <- melt(df, id='time')
-ggplot(df, aes(time, value, color=variable)) + geom_line() +
-  labs(title = '水泥行业净利润')
+ggplot(df, aes(time, value, color=variable)) + geom_line()
 
-#相关系数图，辅助变量选择
-# tmp <- dat_cement[,m$index+1]
+# tmp <- dat_petro[,m$index+1]
 # names(tmp) <- ''
 # corr <- cor(tmp)
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
-#手动剔除变量，修改模型
-index <- m$index[-c(2,4)]
-lm1 <- lm(netin~., data = dat_cement[,c(0,index)+1])
-mean(abs(lm1$residuals/dat_cement$netin))
+index <- m$index[-c(3,4)]
+lm1 <- lm(cost~., data = dat_petro[,c(0,index)+1])
+mean(abs(lm1$residuals/dat_petro$cost))
 summary(lm1)
 vif(lm1)
 
-#输出。csv为回测的真值和预测值，txt为模型，及下一期预测值
 pred <- predict(lm1,X_all[X_all$time == '2017 Q2',index+1],se.fit = T,interval = 'confidence')
 df <- data.frame(time=t,
-                 actual=dat_cement$netin,
+                 actual=dat_petro$cost,
                  pred=lm1$fitted.values)
 # df <- melt(df, id='time')
-# ggplot(df, aes(time, value, color=variable)) + geom_line() +
-#    labs(title = '水泥行业净利润')
-# write.csv(df, file = '水泥行业净利润.csv')
-# sink('水泥行业净利润模型.txt')
+# ggplot(df, aes(time, value, color=variable)) + geom_line()
+# write.csv(df, file = '石化行业成本.csv')
+# sink('石化行业成本模型.txt')
 # summary(lm1)
 # lm1$coefficients
 # print('置信区间:')
@@ -255,4 +235,5 @@ df <- data.frame(time=t,
 # print('标准差:')
 # pred$se.fit
 # sink()
+
 

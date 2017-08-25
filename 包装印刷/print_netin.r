@@ -6,16 +6,16 @@ library(glmnet) #lasso regression
 library(car) #vif detection
 library(reshape2) #mdataframe reshape
 #load company report####
-#dataframeÖØÃüÃû£ºĞĞÒµ¡¢²ÆÎñÖ¸±ê
-#ĞŞ¸Ä´Ó±¨±íÖĞÌáÈ¡µÄÖ¸±ê
+#dataframeé‡å‘½åï¼šè¡Œä¸šã€è´¢åŠ¡æŒ‡æ ‡
+#ä¿®æ”¹ä»æŠ¥è¡¨ä¸­æå–çš„æŒ‡æ ‡
 load("E:/FJC/report.rda")
-index <- grep('°ü×°Ó¡Ë¢', report$ÉêÍò¶ş¼¶)
+index <- grep('åŒ…è£…å°åˆ·', report$ç”³ä¸‡äºŒçº§)
 print <- report[index,]
 report_clean <- function(name, time, y){
-  #report_clean º¯Êı´¦Àí¹«Ë¾¼¾±¨£¬¼ÆËã¸÷¼¾¶È²ÆÎñÖ¸±êµÄ±ä»¯¡£¶ÔÓÚ¼¾±¨²ĞÈ±²»ÆëµÄÓÃÆ½¾ù·¨²¹Æë
-  #Ä¬ÈÏ±¨¸æÆÚÎªÃ¿¼¾¶ÈÄ©£¬Êä³öºó»á½«ËùÓĞ31ºÅ¸ÄÎª30ºÅ
-  #º¯ÊıÊäÈë name ¹«Ë¾Ãû time ±¨±íÈÕ£¨POSIXlt£¬°üº¬ÄêÔÂÈÕ£© y Ğè¼ÆËãµÄ²ÆÎñÖ¸±ê£¨numeric£©
-  #º¯ÊıÊä³ö data.frame£º name time y
+  #report_clean å‡½æ•°å¤„ç†å…¬å¸å­£æŠ¥ï¼Œè®¡ç®—å„å­£åº¦è´¢åŠ¡æŒ‡æ ‡çš„å˜åŒ–ã€‚å¯¹äºå­£æŠ¥æ®‹ç¼ºä¸é½çš„ç”¨å¹³å‡æ³•è¡¥é½
+  #é»˜è®¤æŠ¥å‘ŠæœŸä¸ºæ¯å­£åº¦æœ«ï¼Œè¾“å‡ºåä¼šå°†æ‰€æœ‰31å·æ”¹ä¸º30å·
+  #å‡½æ•°è¾“å…¥ name å…¬å¸å time æŠ¥è¡¨æ—¥ï¼ˆPOSIXltï¼ŒåŒ…å«å¹´æœˆæ—¥ï¼‰ y éœ€è®¡ç®—çš„è´¢åŠ¡æŒ‡æ ‡ï¼ˆnumericï¼‰
+  #å‡½æ•°è¾“å‡º data.frameï¼š name time y
   library(lubridate) # date management
   if(class(time)[1] != 'POSIXlt') return('Wrong: required POSIXlt for time')
   day(time) <- 27
@@ -59,7 +59,7 @@ report_clean <- function(name, time, y){
   return(de_y)
 }
 
-netin <- report_clean(print$corp_name, print$report_period, print$¾»ÀûÈó)
+netin <- report_clean(print$corp_name, print$report_period, print$å‡€åˆ©æ¶¦)
 netin[netin == 0] <- NA
 netin <- netin[order(netin$time),]
 netin <- aggregate(netin$y, by=list(as.yearqtr(netin$time)), mean, na.rm = T)
@@ -67,17 +67,17 @@ names(netin) <- c('time', 'netin')
 # netin
 
 #load chain factors######
-#¸ü¸ÄÂ·¾¶ÖÁ¸ÃĞĞÒµµÄÎÄ¼ş¼Ğ
-#¶ÁÈëÊı¾İ£¬Ğè¶ÔExcel±í×öÔ¤´¦Àí
-#×¢ÒâÊ±¼äÁĞµÄ¸ñÊ½£¨¡®/¡¯·Ö¸î or ¡®-¡¯·Ö¸î£©
-setwd("E:/FJC/°ü×°Ó¡Ë¢/")
-chain <- read.csv('°ü×°Ó¡Ë¢.csv')
+#æ›´æ”¹è·¯å¾„è‡³è¯¥è¡Œä¸šçš„æ–‡ä»¶å¤¹
+#è¯»å…¥æ•°æ®ï¼Œéœ€å¯¹Excelè¡¨åšé¢„å¤„ç†
+#æ³¨æ„æ—¶é—´åˆ—çš„æ ¼å¼ï¼ˆâ€˜/â€™åˆ†å‰² or â€˜-â€™åˆ†å‰²ï¼‰
+setwd("E:/FJC/åŒ…è£…å°åˆ·/")
+chain <- read.csv('åŒ…è£…å°åˆ·.csv')
 names(chain)[1] <- 'time'
 chain$time <- as.POSIXlt(chain$time, format = '%Y-%m-%d')
 
 Ave <- function(dat, t=1, type='season', ac = F){
-  #aveº¯Êı¶ÔÊı¾İ¼¯ÖĞµÄÖ¸±ê°´ÔÂ»ò¼¾¶ÈÆ½¾ù
-  #Ä¬ÈÏÊ±¼ä±êÇ©ÔÚµÚÒ»ÁĞ£¬¸ñÊ½ÎªPOSIXlt£¬°üº¬ÄêÔÂĞÅÏ¢
+  #aveå‡½æ•°å¯¹æ•°æ®é›†ä¸­çš„æŒ‡æ ‡æŒ‰æœˆæˆ–å­£åº¦å¹³å‡
+  #é»˜è®¤æ—¶é—´æ ‡ç­¾åœ¨ç¬¬ä¸€åˆ—ï¼Œæ ¼å¼ä¸ºPOSIXltï¼ŒåŒ…å«å¹´æœˆä¿¡æ¯
   library(zoo)
   df <- list()
   if(type == 'season'){time <- as.yearqtr(dat[,t])}
@@ -101,33 +101,33 @@ Ave <- function(dat, t=1, type='season', ac = F){
   names(df) <- c('time',names(dat)[-1])
   return(df)
 }
-chain_season <- Ave(chain[, -grep('ÀÛ[»ı¼Æ]', names(chain))], ac=F)
-tmp <- Ave(chain[, c(1,grep('ÀÛ[»ı¼Æ]', names(chain)))], ac=T)
+chain_season <- Ave(chain[, -grep('ç´¯[ç§¯è®¡]', names(chain))], ac=F)
+tmp <- Ave(chain[, c(1,grep('ç´¯[ç§¯è®¡]', names(chain)))], ac=T)
 chain_season <- merge(chain_season, tmp, by='time')
 
-# #¸÷Ê¡²úÁ¿¼Ó×Ü
-# index <- grep('²úÁ¿.°ü×°Ó¡Ë¢', names(chain_season))
-# chain_season$°ü×°Ó¡Ë¢²úÁ¿ <- rowSums(chain_season[,index])
+# #å„çœäº§é‡åŠ æ€»
+# index <- grep('äº§é‡.åŒ…è£…å°åˆ·', names(chain_season))
+# chain_season$åŒ…è£…å°åˆ·äº§é‡ <- rowSums(chain_season[,index])
 # chain_season <- chain_season[,-index]
 # 
-# #²¹³ä±äÁ¿
-# tmp <- read.csv('°ü×°Ó¡Ë¢³É±¾.csv')
+# #è¡¥å……å˜é‡
+# tmp <- read.csv('åŒ…è£…å°åˆ·æˆæœ¬.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y-%m-%d')
 # tmp <- Ave(tmp)
 # chain_season <- merge(chain_season, tmp, by='time')
 # 
-# #²¹³ä±äÁ¿
-# tmp <- read.csv('°ü×°Ó¡Ë¢ÓªÊÕ.csv')
+# #è¡¥å……å˜é‡
+# tmp <- read.csv('åŒ…è£…å°åˆ·è¥æ”¶.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y/%m/%d')
-# tmp1 <- Ave(tmp[,-grep('ÀÛ[»ı¼Æ]', names(tmp))])
+# tmp1 <- Ave(tmp[,-grep('ç´¯[ç§¯è®¡]', names(tmp))])
 # chain_season <- merge(chain_season, tmp1, by='time')
-# tmp <- Ave(tmp[,c(1,grep('ÀÛ[»ı¼Æ]', names(tmp)))], ac=T)
+# tmp <- Ave(tmp[,c(1,grep('ç´¯[ç§¯è®¡]', names(tmp)))], ac=T)
 # chain_season <- merge(chain_season, tmp)
 
 
-#É¾³ıÈ±Ê§µÄ±äÁ¿
+#åˆ é™¤ç¼ºå¤±çš„å˜é‡
 chain_season <- chain_season[chain_season$time < 2017.5,]
 chain_season[chain_season == 0] <- NA
 na1 <- apply(chain_season, 2, function(x){sum(is.na(x))>0.5})
@@ -167,9 +167,9 @@ dat_print <- dat_print[,-1]
 
 #model#####
 
-#modelº¯ÊıÍ¨¹ımarginal-r2É¸Ñ¡×Ô±äÁ¿£¬ÀûÓÃvifÏŞÖÆ×ÔÏà¹ØĞÔ
-#mustÎªÊÖ¶¯Éè¶¨µÄ±ØĞë¼ÓÈëÄ£ĞÍµÄ±äÁ¿ÁĞºÅ
-#Êä³ö$modeÎªÄ£ĞÍ£¬$indexÎªÈëÑ¡Ä£ĞÍµÄ×Ô±äÁ¿ÁĞºÅ
+#modelå‡½æ•°é€šè¿‡marginal-r2ç­›é€‰è‡ªå˜é‡ï¼Œåˆ©ç”¨vifé™åˆ¶è‡ªç›¸å…³æ€§
+#mustä¸ºæ‰‹åŠ¨è®¾å®šçš„å¿…é¡»åŠ å…¥æ¨¡å‹çš„å˜é‡åˆ—å·
+#è¾“å‡º$modeä¸ºæ¨¡å‹ï¼Œ$indexä¸ºå…¥é€‰æ¨¡å‹çš„è‡ªå˜é‡åˆ—å·
 Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
   sst <- var(Y)
   r2 <- c()
@@ -226,7 +226,7 @@ df <- data.frame(time=t,
                  pred=m$model$fitted.values)
 df <- melt(df, id='time')
 ggplot(df, aes(time, value, color=variable)) + geom_line() +
-  labs(title = '°ü×°Ó¡Ë¢ĞĞÒµ¾»ÀûÈó')
+  labs(title = 'åŒ…è£…å°åˆ·è¡Œä¸šå‡€åˆ©æ¶¦')
 
 
 # tmp <- dat_print[,m$index+1]
@@ -246,14 +246,14 @@ df <- data.frame(time=t,
                  pred=lm1$fitted.values)
 # df <- melt(df, id='time')
 # ggplot(df, aes(time, value, color=variable)) + geom_line() +
-#    labs(title = '°ü×°Ó¡Ë¢ĞĞÒµ¾»ÀûÈó')
-# write.csv(df, file = '°ü×°Ó¡Ë¢ĞĞÒµ¾»ÀûÈó.csv')
-# sink('°ü×°Ó¡Ë¢ĞĞÒµ¾»ÀûÈóÄ£ĞÍ.txt')
+#    labs(title = 'åŒ…è£…å°åˆ·è¡Œä¸šå‡€åˆ©æ¶¦')
+# write.csv(df, file = 'åŒ…è£…å°åˆ·è¡Œä¸šå‡€åˆ©æ¶¦.csv')
+# sink('åŒ…è£…å°åˆ·è¡Œä¸šå‡€åˆ©æ¶¦æ¨¡å‹.txt')
 # summary(lm1)
 # lm1$coefficients
-# print('ÖÃĞÅÇø¼ä:')
+# print('ç½®ä¿¡åŒºé—´:')
 # pred$fit
-# print('±ê×¼²î:')
+# print('æ ‡å‡†å·®')
 # pred$se.fit
 # sink()
 

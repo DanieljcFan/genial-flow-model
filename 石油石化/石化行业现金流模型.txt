@@ -1,0 +1,32 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_petro[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-954463928 -326369880    8993179  247701981  918175538 
+
+Coefficients:
+                                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                              1.474e+10  3.496e+09   4.216 0.000468 ***
+y_lag2                                  -4.708e-01  1.294e-01  -3.638 0.001749 ** 
+库存量.馏分燃料油.DOE.环比增减_lag2     -5.284e+05  1.614e+05  -3.274 0.003990 ** 
+现货价.对二甲苯PX.CFR中国主港_lag4      -2.199e+06  5.003e+05  -4.395 0.000312 ***
+市场价.平均价..乙醇.优级..华东地区_lag1 -1.015e+06  2.950e+05  -3.439 0.002752 ** 
+库存量.商业原油.全美_lag4               -1.053e+04  4.613e+03  -2.282 0.034200 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4.97e+08 on 19 degrees of freedom
+Multiple R-squared:  0.7968,	Adjusted R-squared:  0.7433 
+F-statistic:  14.9 on 5 and 19 DF,  p-value: 5.209e-06
+
+                            (Intercept)                                  y_lag2     库存量.馏分燃料油.DOE.环比增减_lag2 
+                           1.473996e+10                           -4.707984e-01                           -5.284289e+05 
+     现货价.对二甲苯PX.CFR中国主港_lag4 市场价.平均价..乙醇.优级..华东地区_lag1               库存量.商业原油.全美_lag4 
+                          -2.198533e+06                           -1.014588e+06                           -1.052574e+04 
+[1] "置信区间:"
+          fit       lwr        upr
+26 1287988873 412651265 2163326481
+[1] "标准差:"
+[1] 418216698
