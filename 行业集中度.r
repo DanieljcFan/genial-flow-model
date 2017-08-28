@@ -37,4 +37,8 @@ index <- grep('造纸', report$申万二级)
 tmp <- report[index,]
 write.csv(tmp[,c(2,4,22)] ,file='造纸-营业总收入.csv',row.names=F)
 
+index <- grep('彩电', report$申万三级)
+tmp <- report[index,]
+write.csv(tmp[,c(2,4,22)] ,file='彩电-营业总收入.csv',row.names=F)
+
 

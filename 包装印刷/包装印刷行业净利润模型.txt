@@ -1,0 +1,28 @@
+
+Call:
+lm(formula = netin ~ ., data = dat_print[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-10100474  -2125419     -1169   2389213   6736278 
+
+Coefficients:
+                                Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                    9.745e+06  5.495e+06   1.773  0.09067 .  
+seasonQ4                      -1.431e+07  2.409e+06  -5.941 6.76e-06 ***
+申万行业指数.包装印刷_lag2     5.362e+03  9.860e+02   5.438 2.15e-05 ***
+产量.包装专用设备.当月值_lag4  2.202e+03  6.648e+02   3.312  0.00331 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4914000 on 21 degrees of freedom
+Multiple R-squared:  0.7658,	Adjusted R-squared:  0.7323 
+F-statistic: 22.89 on 3 and 21 DF,  p-value: 8.067e-07
+
+                  (Intercept)                      seasonQ4    申万行业指数.包装印刷_lag2 产量.包装专用设备.当月值_lag4 
+                  9744785.841                 -14312484.060                      5361.961                      2202.277 
+[1] "置信区间:"
+        fit      lwr      upr
+26 49992244 46133690 53850799
+[1] "标准差"
+[1] 1855419

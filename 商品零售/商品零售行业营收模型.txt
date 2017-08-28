@@ -1,0 +1,30 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_retail[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-244960273  -51344165  -12957932   56532316  252864475 
+
+Coefficients:
+                                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                         2949938206  504249907   5.850 8.31e-06 ***
+社会消费品零售总额.城镇.当月值_lag4     100471       9605  10.460 8.76e-10 ***
+税收收入.当月值_lag3                     75453      17694   4.264 0.000345 ***
+义乌中国小商品指数.景气指数_lag1      -1498580     527845  -2.839 0.009828 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 99730000 on 21 degrees of freedom
+Multiple R-squared:  0.9605,	Adjusted R-squared:  0.9548 
+F-statistic: 170.2 on 3 and 21 DF,  p-value: 6.846e-15
+
+                        (Intercept) 社会消费品零售总额.城镇.当月值_lag4                税收收入.当月值_lag3 
+                      2949938205.75                           100470.76                            75453.32 
+   义乌中国小商品指数.景气指数_lag1 
+                        -1498580.09 
+[1] "置信区间:"
+          fit        lwr        upr
+26 4288357909 4172097320 4404618499
+[1] "标准差:"
+[1] 55904893

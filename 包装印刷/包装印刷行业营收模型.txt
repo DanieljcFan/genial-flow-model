@@ -1,0 +1,33 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_print[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-22718990  -8104519  -3026942   7069396  30809482 
+
+Coefficients:
+                                                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                                     164714265   37710885   4.368 0.000298 ***
+seasonQ3                                         25852065    7428000   3.480 0.002360 ** 
+seasonQ4                                         27682565    7849992   3.526 0.002121 ** 
+产量.初级形态的塑料.当月值_lag4                    534337      47924  11.150 4.93e-10 ***
+工业增加值.印刷和记录媒介的复制业.当月同比_lag3  -3794839    1548966  -2.450 0.023621 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 15030000 on 20 degrees of freedom
+Multiple R-squared:  0.964,	Adjusted R-squared:  0.9568 
+F-statistic:   134 on 4 and 20 DF,  p-value: 3.856e-14
+
+                                    (Intercept)                                        seasonQ3 
+                                    164714264.8                                      25852065.0 
+                                       seasonQ4                 产量.初级形态的塑料.当月值_lag4 
+                                     27682565.2                                        534337.2 
+工业增加值.印刷和记录媒介的复制业.当月同比_lag3 
+                                     -3794838.8 
+[1] "置信区间:"
+         fit       lwr       upr
+26 510297607 495588669 525006545
+[1] "标准差"
+[1] 7051388

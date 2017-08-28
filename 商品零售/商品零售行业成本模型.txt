@@ -1,0 +1,27 @@
+
+Call:
+lm(formula = cost ~ ., data = dat_retail[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-233173496  -81315098    2972737   76623119  181116984 
+
+Coefficients:
+                                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                    1479410007  105744700  13.990 1.98e-12 ***
+社会消费品零售总额.城镇.当月值     113335       5366  21.123 4.24e-16 ***
+seasonQ2                       -164650620   43517993  -3.784  0.00102 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 107300000 on 22 degrees of freedom
+Multiple R-squared:  0.9578,	Adjusted R-squared:  0.954 
+F-statistic: 249.9 on 2 and 22 DF,  p-value: 7.487e-16
+
+                   (Intercept) 社会消费品零售总额.城镇.当月值                       seasonQ2 
+                  1479410006.8                       113335.1                   -164650620.4 
+[1] "置信区间:"
+          fit        lwr        upr
+26 4125019289 4022307700 4227730879
+[1] "标准差:"
+[1] 49526459

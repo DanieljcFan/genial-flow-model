@@ -238,7 +238,7 @@ mean(abs(lm1$residuals/dat_cement$netin))
 summary(lm1)
 vif(lm1)
 
-#输出。csv为回测的真值和预测值，txt为模型，及下一期预测值
+#输出 csv为回测的真值和预测值，txt为模型，及下一期预测值
 pred <- predict(lm1,X_all[X_all$time == '2017 Q2',index+1],se.fit = T,interval = 'confidence')
 df <- data.frame(time=t,
                  actual=dat_cement$netin,

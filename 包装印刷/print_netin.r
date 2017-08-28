@@ -234,7 +234,7 @@ ggplot(df, aes(time, value, color=variable)) + geom_line() +
 # corr <- cor(tmp)
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
-index <- m$index[-c(2,4)]
+index <- m$index[-c(2,3,5,7,8,9)]
 lm1 <- lm(netin~., data = dat_print[,c(0,index)+1])
 mean(abs(lm1$residuals/dat_print$netin))
 summary(lm1)

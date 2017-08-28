@@ -1,0 +1,31 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_TV[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-458334481 -217185126  -65532382  178250423  757739971 
+
+Coefficients:
+                                             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                                 930074756  447668859   2.078  0.05084 .  
+seasonQ2                                    325600136  171070024   1.903  0.07149 .  
+seasonQ4                                    470494675  194958263   2.413  0.02552 *  
+销量.彩色电视机.累计值_lag4                    768194     145923   5.264 3.75e-05 ***
+进口数量.二极管及类似半导体器件.当月值_lag1     32872       9475   3.469  0.00242 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 328400000 on 20 degrees of freedom
+Multiple R-squared:  0.867,	Adjusted R-squared:  0.8404 
+F-statistic: 32.58 on 4 and 20 DF,  p-value: 1.679e-08
+
+                                (Intercept)                                    seasonQ2                                    seasonQ4 
+                               930074755.87                                325600136.33                                470494674.67 
+                销量.彩色电视机.累计值_lag4 进口数量.二极管及类似半导体器件.当月值_lag1 
+                                  768193.46                                    32871.95 
+[1] "置信区间:"
+          fit        lwr        upr
+26 5550714726 5196769052 5904660399
+[1] "标准差:"
+[1] 169679710

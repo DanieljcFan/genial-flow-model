@@ -9,8 +9,8 @@ library(reshape2) #mdataframe reshape
 #dataframe重命名：行业、财务指标
 #修改从报表中提取的指标
 load("E:/FJC/report.rda")
-index <- grep('石油化工', report$申万二级)
-petro <- report[index,]
+index <- grep('包装印刷', report$申万二级)
+print <- report[index,]
 report_clean <- function(name, time, y){
   #report_clean 函数处理公司季报，计算各季度财务指标的变化。对于季报残缺不齐的用平均法补齐
   #默认报告期为每季度末，输出后会将所有31号改为30号
@@ -48,8 +48,8 @@ report_clean <- function(name, time, y){
   index_3 <- c(index4[c(1:length(index4))%%4 == 1])
   
   index_1 <- index_1[!is.na(index_1)]
-  index_2 <- index_1[!is.na(index_2)]
-  index_3 <- index_1[!is.na(index_3)]
+  index_2 <- index_2[!is.na(index_2)]
+  index_3 <- index_3[!is.na(index_3)]
   
   time[index_1] <- time[index_1] - months(3)
   time[index_2] <- time[index_2] - months(6)
@@ -59,19 +59,19 @@ report_clean <- function(name, time, y){
   return(de_y)
 }
 
-cash <- report_clean(petro$corp_name, petro$report_period,petro$经营活动现金净流量)
-cash[cash == 0] <- NA
-cash <- cash[order(cash$time),]
-cash <- aggregate(cash$y, by=list(as.yearqtr(cash$time)), mean, na.rm = T)
-names(cash) <- c('time', 'cash')
-# cash
+revenue <- report_clean(print$corp_name, print$report_period, print$营业总收入)
+revenue[revenue == 0] <- NA
+revenue <- revenue[order(revenue$time),]
+revenue <- aggregate(revenue$y, by=list(as.yearqtr(revenue$time)), mean, na.rm = T)
+names(revenue) <- c('time', 'revenue')
+# revenue
 
 #load chain factors######
 #更改路径至该行业的文件夹
 #读入数据，需对Excel表做预处理
 #注意时间列的格式（‘/’分割 or ‘-’分割）
-setwd("E:/FJC/石油石化/")
-chain <- read.csv('石油石化.csv')
+setwd("E:/FJC/包装印刷/")
+chain <- read.csv('包装印刷.csv')
 names(chain)[1] <- 'time'
 chain$time <- as.POSIXlt(chain$time, format = '%Y-%m-%d')
 
@@ -101,27 +101,45 @@ Ave <- function(dat, t=1, type='season', ac = F){
   names(df) <- c('time',names(dat)[-1])
   return(df)
 }
-chain_season <- Ave(chain, ac=F)
+chain_season <- Ave(chain[, -grep('累[积计]', names(chain))], ac=F)
+tmp <- Ave(chain[, c(1,grep('累[积计]', names(chain)))], ac=T)
+chain_season <- merge(chain_season, tmp, by='time')
 
-
+# #各省产量加总
+# index <- grep('产量.包装印刷', names(chain_season))
+# chain_season$包装印刷产量 <- rowSums(chain_season[,index])
+# chain_season <- chain_season[,-index]
+# 
 # #补充变量
-# tmp <- read.csv('石化现金流.csv')
+# tmp <- read.csv('包装印刷成本.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y-%m-%d')
 # tmp <- Ave(tmp)
 # chain_season <- merge(chain_season, tmp, by='time')
-
+# 
+# #补充变量
+# tmp <- read.csv('包装印刷营收.csv')
+# names(tmp)[1] <- 'time'
+# tmp$time <- as.POSIXlt(tmp$time, format='%Y/%m/%d')
+# tmp1 <- Ave(tmp[,-grep('累[积计]', names(tmp))])
+# chain_season <- merge(chain_season, tmp1, by='time')
+# tmp <- Ave(tmp[,c(1,grep('累[积计]', names(tmp)))], ac=T)
+# chain_season <- merge(chain_season, tmp)
 
 
 #删除缺失的变量
 chain_season <- chain_season[chain_season$time < 2017.5,]
 chain_season[chain_season == 0] <- NA
 na1 <- apply(chain_season, 2, function(x){sum(is.na(x))>0.5})
+# names(chain_season)[which(na1)]
 chain_season <- chain_season[,!na1]
 
 #merge X and Y ####
 X <- chain_season
-#补充提前期的变量
+# X[X==0] <- NA
+# na1 <- apply(X, 1, function(x){sum(is.na(x))>0.5})
+# X <- X[!na1,]
+# X$season <- as.factor(sub('2','1', quarters(X$time)))
 X_lag1 <- X
 X_lag1$time <- X_lag1$time + 0.25 
 names(X_lag1)[-1] <- paste0(names(X)[-1],'_lag1')
@@ -136,16 +154,16 @@ X_lag4$time <- X_lag4$time + 1
 names(X_lag4)[-1] <- paste0(names(X)[-1],'_lag4')
 
 X_all <- merge(merge(merge(merge(X, X_lag1),X_lag2),X_lag3),X_lag4)
-y_lag1 <- data.frame(time=cash$time + 0.25, y_lag1=cash$cash)
-y_lag2 <- data.frame(time=cash$time + 0.5, y_lag2=cash$cash)
-y_lag3 <- data.frame(time=cash$time + 0.75, y_lag3=cash$cash)
-y_lag4 <- data.frame(time=cash$time + 1, y_lag4=cash$cash)
+y_lag1 <- data.frame(time=revenue$time + 0.25, y_lag1=revenue$revenue)
+y_lag2 <- data.frame(time=revenue$time + 0.5, y_lag2=revenue$revenue)
+y_lag3 <- data.frame(time=revenue$time + 0.75, y_lag3=revenue$revenue)
+y_lag4 <- data.frame(time=revenue$time + 1, y_lag4=revenue$revenue)
 X_all <- merge(y_lag1,merge(y_lag2,merge(y_lag3,merge(y_lag4,X_all))))
-X_all$season <- as.factor(sub('0','1',quarters(X_all$time))) #sub可将不同季度合并，减少变量数
+X_all$season <- as.factor(sub('2','1',quarters(X_all$time)))
 
-dat_petro <- merge(cash,X_all)
-t <- dat_petro[,1]
-dat_petro <- dat_petro[,-1]
+dat_print <- merge(revenue,X_all)
+t <- dat_print[,1]
+dat_print <- dat_print[,-1]
 
 #model#####
 
@@ -192,40 +210,50 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
   return(list(model=model,index=index))
 }
 
-m <- Model(dat_petro$cash,
-           dat_petro[-1],
+m <- Model(dat_print$revenue,
+           dat_print[-1],
            vif=5,
-           # must = ncol(dat_petro)-1,
+           must = ncol(dat_print)-1,
            method = 'aic'
 )
 
-mean(abs(m$model$residuals/dat_petro$cash))
+mean(abs(m$model$residuals/dat_print$revenue))
 summary(m$model)
 vif(m$model)
 
 df <- data.frame(time=t,
-                 actual=dat_petro$cash,
+                 actual=dat_print$revenue,
                  pred=m$model$fitted.values)
 df <- melt(df, id='time')
-ggplot(df, aes(time, value, color=variable)) + geom_line()
+ggplot(df, aes(time, value, color=variable)) + geom_line() +
+  labs(title = '包装印刷行业营收')
 
-# tmp <- dat_petro[,m$index+1]
+
+# tmp <- dat_print[,m$index+1]
 # names(tmp) <- ''
 # corr <- cor(tmp)
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
-index <- m$index[-c(1,2,4,9)]
-lm1 <- lm(cash~., data = dat_petro[,c(0,index)+1])
-mean(abs(lm1$residuals/dat_petro$cash))
+index <- m$index
+lm1 <- lm(revenue~., data = dat_print[,c(0,index)+1])
+mean(abs(lm1$residuals/dat_print$revenue))
 summary(lm1)
 vif(lm1)
 
 pred <- predict(lm1,X_all[X_all$time == '2017 Q2',index+1],se.fit = T,interval = 'confidence')
 df <- data.frame(time=t,
-                 actual=dat_petro$cash,
+                 actual=dat_print$revenue,
                  pred=lm1$fitted.values)
 # df <- melt(df, id='time')
-# ggplot(df, aes(time, value, color=variable)) + geom_line()
-
-
+# ggplot(df, aes(time, value, color=variable)) + geom_line() +
+#    labs(title = '包装印刷行业营收')
+# write.csv(df, file = '包装印刷行业营收.csv')
+# sink('包装印刷行业营收模型.txt')
+# summary(lm1)
+# lm1$coefficients
+# print('置信区间:')
+# pred$fit
+# print('标准差')
+# pred$se.fit
+# sink()
 

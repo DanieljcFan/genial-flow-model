@@ -2,15 +2,14 @@ library(ggplot2)
 library(lubridate) # date management
 library(zoo) #date management
 library(corrplot) #covariance visualization
-library(glmnet) #lasso regression
 library(car) #vif detection
 library(reshape2) #mdataframe reshape
 #load company report####
 #dataframe重命名：行业、财务指标
 #修改从报表中提取的指标
 load("E:/FJC/report.rda")
-index <- grep('石油化工', report$申万二级)
-petro <- report[index,]
+index <- grep('一般零售', report$申万二级)
+retail <- report[index,]
 report_clean <- function(name, time, y){
   #report_clean 函数处理公司季报，计算各季度财务指标的变化。对于季报残缺不齐的用平均法补齐
   #默认报告期为每季度末，输出后会将所有31号改为30号
@@ -48,8 +47,8 @@ report_clean <- function(name, time, y){
   index_3 <- c(index4[c(1:length(index4))%%4 == 1])
   
   index_1 <- index_1[!is.na(index_1)]
-  index_2 <- index_1[!is.na(index_2)]
-  index_3 <- index_1[!is.na(index_3)]
+  index_2 <- index_2[!is.na(index_2)]
+  index_3 <- index_3[!is.na(index_3)]
   
   time[index_1] <- time[index_1] - months(3)
   time[index_2] <- time[index_2] - months(6)
@@ -59,19 +58,19 @@ report_clean <- function(name, time, y){
   return(de_y)
 }
 
-cash <- report_clean(petro$corp_name, petro$report_period,petro$经营活动现金净流量)
-cash[cash == 0] <- NA
-cash <- cash[order(cash$time),]
-cash <- aggregate(cash$y, by=list(as.yearqtr(cash$time)), mean, na.rm = T)
-names(cash) <- c('time', 'cash')
-# cash
+cost <- report_clean(retail$corp_name, retail$report_period, retail$营业总成本)
+cost[cost == 0] <- NA
+cost <- cost[order(cost$time),]
+cost <- aggregate(cost$y, by=list(as.yearqtr(cost$time)), mean, na.rm = T)
+names(cost) <- c('time', 'cost')
+# cost
 
 #load chain factors######
 #更改路径至该行业的文件夹
 #读入数据，需对Excel表做预处理
 #注意时间列的格式（‘/’分割 or ‘-’分割）
-setwd("E:/FJC/石油石化/")
-chain <- read.csv('石油石化.csv')
+setwd("E:/FJC/商品零售/")
+chain <- read.csv('商品零售.csv')
 names(chain)[1] <- 'time'
 chain$time <- as.POSIXlt(chain$time, format = '%Y-%m-%d')
 
@@ -103,20 +102,33 @@ Ave <- function(dat, t=1, type='season', ac = F){
 }
 chain_season <- Ave(chain, ac=F)
 
-
+# #各省产量加总
+# index <- grep('产量.商品零售', names(chain_season))
+# chain_season$商品零售产量 <- rowSums(chain_season[,index])
+# chain_season <- chain_season[,-index]
+# 
 # #补充变量
-# tmp <- read.csv('石化现金流.csv')
+# tmp <- read.csv('商品零售成本.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y-%m-%d')
 # tmp <- Ave(tmp)
 # chain_season <- merge(chain_season, tmp, by='time')
-
+# 
+# #补充变量
+# tmp <- read.csv('商品零售成本.csv')
+# names(tmp)[1] <- 'time'
+# tmp$time <- as.POSIXlt(tmp$time, format='%Y/%m/%d')
+# tmp1 <- Ave(tmp[,-grep('累[积计]', names(tmp))])
+# chain_season <- merge(chain_season, tmp1, by='time')
+# tmp <- Ave(tmp[,c(1,grep('累[积计]', names(tmp)))], ac=T)
+# chain_season <- merge(chain_season, tmp)
 
 
 #删除缺失的变量
 chain_season <- chain_season[chain_season$time < 2017.5,]
 chain_season[chain_season == 0] <- NA
 na1 <- apply(chain_season, 2, function(x){sum(is.na(x))>0.5})
+# names(chain_season)[which(na1)]
 chain_season <- chain_season[,!na1]
 
 #merge X and Y ####
@@ -136,21 +148,22 @@ X_lag4$time <- X_lag4$time + 1
 names(X_lag4)[-1] <- paste0(names(X)[-1],'_lag4')
 
 X_all <- merge(merge(merge(merge(X, X_lag1),X_lag2),X_lag3),X_lag4)
-y_lag1 <- data.frame(time=cash$time + 0.25, y_lag1=cash$cash)
-y_lag2 <- data.frame(time=cash$time + 0.5, y_lag2=cash$cash)
-y_lag3 <- data.frame(time=cash$time + 0.75, y_lag3=cash$cash)
-y_lag4 <- data.frame(time=cash$time + 1, y_lag4=cash$cash)
+y_lag1 <- data.frame(time=cost$time + 0.25, y_lag1=cost$cost)
+y_lag2 <- data.frame(time=cost$time + 0.5, y_lag2=cost$cost)
+y_lag3 <- data.frame(time=cost$time + 0.75, y_lag3=cost$cost)
+y_lag4 <- data.frame(time=cost$time + 1, y_lag4=cost$cost)
 X_all <- merge(y_lag1,merge(y_lag2,merge(y_lag3,merge(y_lag4,X_all))))
-X_all$season <- as.factor(sub('0','1',quarters(X_all$time))) #sub可将不同季度合并，减少变量数
+X_all$season <- as.factor(sub('3','2',sub('4','1',quarters(X_all$time)))) #sub可将不同季度合并，减少变量数
 
-dat_petro <- merge(cash,X_all)
-t <- dat_petro[,1]
-dat_petro <- dat_petro[,-1]
+#合并X,Y，时间戳另存为t
+dat_retail <- merge(cost,X_all)
+t <- dat_retail[,1] 
+dat_retail <- dat_retail[,-1]
 
 #model#####
 
 #model函数通过marginal-r2筛选自变量，利用vif限制自相关性
-#must为手动设定的必须加入模型的变量列号
+#must为手动设定的必须加入模型的变量列号，注意这时已剔除Y
 #输出$mode为模型，$index为入选模型的自变量列号
 Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
   sst <- var(Y)
@@ -192,40 +205,52 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
   return(list(model=model,index=index))
 }
 
-m <- Model(dat_petro$cash,
-           dat_petro[-1],
+m <- Model(dat_retail$cost,
+           dat_retail[-1],
            vif=5,
-           # must = ncol(dat_petro)-1,
+           must = c(7,ncol(dat_retail)-1),
            method = 'aic'
 )
 
-mean(abs(m$model$residuals/dat_petro$cash))
-summary(m$model)
+mean(abs(m$model$residuals/dat_retail$cost)) #相对误差
+summary(m$model) 
 vif(m$model)
 
 df <- data.frame(time=t,
-                 actual=dat_petro$cash,
+                 actual=dat_retail$cost,
                  pred=m$model$fitted.values)
 df <- melt(df, id='time')
-ggplot(df, aes(time, value, color=variable)) + geom_line()
+ggplot(df, aes(time, value, color=variable)) + geom_line() +
+  labs(title = '商品零售行业成本')
 
-# tmp <- dat_petro[,m$index+1]
+#相关系数图，辅助变量选择
+# tmp <- dat_retail[,m$index+1]
 # names(tmp) <- ''
 # corr <- cor(tmp)
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
-index <- m$index[-c(1,2,4,9)]
-lm1 <- lm(cash~., data = dat_petro[,c(0,index)+1])
-mean(abs(lm1$residuals/dat_petro$cash))
+#手动剔除变量，修改模型
+index <- m$index[-c(3,4,5)]
+lm1 <- lm(cost~., data = dat_retail[,c(0,index)+1])
+mean(abs(lm1$residuals/dat_retail$cost))
 summary(lm1)
 vif(lm1)
 
+#输出 csv为回测的真值和预测值，txt为模型，及下一期预测值
 pred <- predict(lm1,X_all[X_all$time == '2017 Q2',index+1],se.fit = T,interval = 'confidence')
 df <- data.frame(time=t,
-                 actual=dat_petro$cash,
+                 actual=dat_retail$cost,
                  pred=lm1$fitted.values)
 # df <- melt(df, id='time')
-# ggplot(df, aes(time, value, color=variable)) + geom_line()
-
-
+# ggplot(df, aes(time, value, color=variable)) + geom_line() +
+#    labs(title = '商品零售行业成本')
+# write.csv(df, file = '商品零售行业成本.csv')
+# sink('商品零售行业成本模型.txt')
+# summary(lm1)
+# lm1$coefficients
+# print('置信区间:')
+# pred$fit
+# print('标准差:')
+# pred$se.fit
+# sink()
 

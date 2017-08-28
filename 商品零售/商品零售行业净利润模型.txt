@@ -1,0 +1,31 @@
+
+Call:
+lm(formula = netin ~ ., data = dat_retail[, c(0, index) + 1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-27426489 -10060944   -671583   9556368  33293498 
+
+Coefficients:
+                             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                -2.224e+08  1.318e+08  -1.687 0.107115    
+消费者预期指数.月.          3.552e+06  1.250e+06   2.843 0.010056 *  
+y_lag2                     -4.823e-01  1.384e-01  -3.485 0.002335 ** 
+申万行业指数.商业贸易_lag2 -1.617e+04  3.899e+03  -4.147 0.000498 ***
+申万行业指数.商业贸易       1.337e+04  4.129e+03   3.238 0.004118 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 16460000 on 20 degrees of freedom
+Multiple R-squared:  0.6977,	Adjusted R-squared:  0.6372 
+F-statistic: 11.54 on 4 and 20 DF,  p-value: 5.086e-05
+
+               (Intercept)         消费者预期指数.月.                     y_lag2 申万行业指数.商业贸易_lag2 
+             -2.223599e+08               3.552350e+06              -4.822913e-01              -1.617200e+04 
+     申万行业指数.商业贸易 
+              1.337137e+04 
+[1] "置信区间:"
+         fit      lwr       upr
+26 103661158 77856616 129465699
+[1] "标准差:"
+[1] 12370563

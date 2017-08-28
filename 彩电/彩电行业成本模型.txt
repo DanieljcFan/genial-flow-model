@@ -1,0 +1,27 @@
+
+Call:
+lm(formula = cost ~ ., data = dat_TV[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-446285001  -91857943    9288967  125809427  278226502 
+
+Coefficients:
+                             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                 543532598  241136554   2.254 0.034490 *  
+销量.彩色电视机.累计值_lag4   1006886      57986  17.364  2.5e-14 ***
+进口平均单价.电容器.当月值       5955       1490   3.997 0.000607 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 179700000 on 22 degrees of freedom
+Multiple R-squared:  0.9436,	Adjusted R-squared:  0.9385 
+F-statistic:   184 on 2 and 22 DF,  p-value: 1.836e-14
+
+                (Intercept) 销量.彩色电视机.累计值_lag4  进口平均单价.电容器.当月值 
+               5.435326e+08                1.006886e+06                5.954584e+03 
+[1] "置信区间:"
+          fit        lwr        upr
+26 5150474323 5027935243 5273013403
+[1] "标准差:"
+[1] 59087068
