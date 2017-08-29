@@ -9,8 +9,8 @@ library(reshape2) #mdataframe reshape
 #dataframe重命名：行业、财务指标
 #修改从报表中提取的指标
 load("E:/FJC/report.rda")
-index <- grep('半导体', report$申万二级)
-semicon <- report[index,]
+index <- grep('纺织', report$申万二级)
+textile <- report[index,]
 report_clean <- function(name, time, y){
   #report_clean 函数处理公司季报，计算各季度财务指标的变化。对于季报残缺不齐的用平均法补齐
   #默认报告期为每季度末，输出后会将所有31号改为30号
@@ -59,19 +59,19 @@ report_clean <- function(name, time, y){
   return(de_y)
 }
 
-netin <- report_clean(semicon$corp_name, semicon$report_period, semicon$净利润)
-netin[netin == 0] <- NA
-netin <- netin[order(netin$time),]
-netin <- aggregate(netin$y, by=list(as.yearqtr(netin$time)), mean, na.rm = T)
-names(netin) <- c('time', 'netin')
-# netin
+revenue <- report_clean(textile$corp_name, textile$report_period, textile$营业总收入)
+revenue[revenue == 0] <- NA
+revenue <- revenue[order(revenue$time),]
+revenue <- aggregate(revenue$y, by=list(as.yearqtr(revenue$time)), mean, na.rm = T)
+names(revenue) <- c('time', 'revenue')
+# revenue
 
 #load chain factors######
 #更改路径至该行业的文件夹
 #读入数据，需对Excel表做预处理
 #注意时间列的格式（‘/’分割 or ‘-’分割）
-setwd("E:/FJC/半导体/")
-chain <- read.csv('半导体.csv')
+setwd("E:/FJC/纺织/")
+chain <- read.csv('纺织1.csv')
 names(chain)[1] <- 'time'
 chain$time <- as.POSIXlt(chain$time, format = '%Y-%m-%d')
 
@@ -106,19 +106,19 @@ tmp <- Ave(chain[, c(1,grep('累[积计]', names(chain)))], ac=T)
 chain_season <- merge(chain_season, tmp, by='time')
 
 # #各省产量加总
-# index <- grep('产量.半导体', names(chain_season))
-# chain_season$半导体产量 <- rowSums(chain_season[,index])
+# index <- grep('产量.纺织', names(chain_season))
+# chain_season$纺织产量 <- rowSums(chain_season[,index])
 # chain_season <- chain_season[,-index]
 # 
 # #补充变量
-# tmp <- read.csv('半导体成本.csv')
+# tmp <- read.csv('纺织成本.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y-%m-%d')
 # tmp <- Ave(tmp)
 # chain_season <- merge(chain_season, tmp, by='time')
 # 
 # #补充变量
-# tmp <- read.csv('半导体营收.csv')
+# tmp <- read.csv('纺织营收.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y/%m/%d')
 # tmp1 <- Ave(tmp[,-grep('累[积计]', names(tmp))])
@@ -134,6 +134,10 @@ na1 <- apply(chain_season, 2, function(x){sum(is.na(x))>0.5})
 # names(chain_season)[which(na1)]
 chain_season <- chain_season[,!na1]
 
+#删除常数变量
+
+
+
 #merge X and Y ####
 X <- chain_season
 # X[X==0] <- NA
@@ -143,21 +147,38 @@ X <- chain_season
 X_lag1 <- X
 X_lag1$time <- X_lag1$time + 0.25 
 names(X_lag1)[-1] <- paste0(names(X)[-1],'_lag1')
+X_lag2 <- X
+X_lag2$time <- X_lag2$time + 0.5 
+names(X_lag2)[-1] <- paste0(names(X)[-1],'_lag2')
+X_lag3 <- X
+X_lag3$time <- X_lag3$time + 0.75 
+names(X_lag3)[-1] <- paste0(names(X)[-1],'_lag3')
 X_lag4 <- X
 X_lag4$time <- X_lag4$time + 1 
 names(X_lag4)[-1] <- paste0(names(X)[-1],'_lag4')
 
-X_all <- merge(merge(X, X_lag1),X_lag4)
-y_lag1 <- data.frame(time=netin$time + 0.25, y_lag1=netin$netin)
-y_lag2 <- data.frame(time=netin$time + 0.5, y_lag2=netin$netin)
-y_lag3 <- data.frame(time=netin$time + 0.75, y_lag3=netin$netin)
-y_lag4 <- data.frame(time=netin$time + 1, y_lag4=netin$netin)
+X_all <- merge(merge(merge(merge(X, X_lag1),X_lag2),X_lag3),X_lag4)
+y_lag1 <- data.frame(time=revenue$time + 0.25, y_lag1=revenue$revenue)
+y_lag2 <- data.frame(time=revenue$time + 0.5, y_lag2=revenue$revenue)
+y_lag3 <- data.frame(time=revenue$time + 0.75, y_lag3=revenue$revenue)
+y_lag4 <- data.frame(time=revenue$time + 1, y_lag4=revenue$revenue)
 X_all <- merge(y_lag1,merge(y_lag2,merge(y_lag3,merge(y_lag4,X_all))))
-X_all$season <- as.factor(quarters(X_all$time))
+X_all$season <- as.factor(sub('0','1',quarters(X_all$time)))
 
-dat_semicon <- merge(netin,X_all)
-t <- dat_semicon[,1]
-dat_semicon <- dat_semicon[,-1]
+dat_textile <- merge(revenue,X_all)
+t <- dat_textile[,1]
+dat_textile <- dat_textile[,-1]
+
+# #find perfect linear X
+# corr <- cor(dat_textile[,-ncol(dat_textile)])
+# diag(corr) <- 0
+# # colnames(corr)[which(corr == 1) %% ncol(corr)]
+# # colnames(corr)[ceiling(which(corr == 1)/ncol(corr))]
+# dat_textile <- dat_textile[,-unique(which(corr > 0.95) %% ncol(corr))]
+# #删除常数变量
+# index <- which(apply(dat_textile[],2,var) == 0)
+# dat_textile
+
 
 #model#####
 
@@ -176,6 +197,7 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
   if(method == 'aic'){
     aic0 <- extractAIC(lm(Y~., data = as.data.frame(cbind(Y,X[,index]))))[2]
     for(i in order(r2, decreasing = T)){
+      
       if(length(index) == 0){index <- i}
       if(i %in% index) {next}
       lm1 <- lm(Y~., data = as.data.frame(cbind(Y, X[,c(index,i)])))
@@ -204,42 +226,45 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
   return(list(model=model,index=index))
 }
 
-m <- Model(dat_semicon$netin,
-           dat_semicon[-1],
+m <- Model(dat_textile$revenue,
+           dat_textile[-1],
            vif=5,
-           must = 4,
+           # must = ncol(dat_textile)-1,
            method = 'aic'
 )
 
-mean(abs(m$model$residuals/dat_semicon$netin))
+mean(abs(m$model$residuals/dat_textile$revenue))
 summary(m$model)
 vif(m$model)
 
 df <- data.frame(time=t,
-                 actual=dat_semicon$netin,
+                 actual=dat_textile$revenue,
                  pred=m$model$fitted.values)
 df <- melt(df, id='time')
-ggplot(df, aes(time, value, color=variable)) + geom_line()
+ggplot(df, aes(time, value, color=variable)) + geom_line() +
+  labs(title = '纺织行业营收')
 
-# tmp <- dat_semicon[,m$index+1]
+
+# tmp <- dat_textile[,m$index+1]
 # names(tmp) <- ''
 # corr <- cor(tmp)
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
-index <- m$index[-c(2,4)]
-lm1 <- lm(netin~., data = dat_semicon[,c(0,index)+1])
-mean(abs(lm1$residuals/dat_semicon$netin))
+index <- m$index[-c(2,4,5,6,8)]
+lm1 <- lm(revenue~., data = dat_textile[,c(0,index)+1])
+mean(abs(lm1$residuals/dat_textile$revenue))
 summary(lm1)
 vif(lm1)
 
 pred <- predict(lm1,X_all[X_all$time == '2017 Q2',index+1],se.fit = T,interval = 'confidence')
 df <- data.frame(time=t,
-                 actual=dat_semicon$netin,
+                 actual=dat_textile$revenue,
                  pred=lm1$fitted.values)
 # df <- melt(df, id='time')
-# ggplot(df, aes(time, value, color=variable)) + geom_line()
-# write.csv(df, file = '半导体行业净利润.csv')
-# sink('半导体行业净利润模型.txt')
+# ggplot(df, aes(time, value, color=variable)) + geom_line() +
+#    labs(title = '纺织行业营收')
+# write.csv(df, file = '纺织行业营收.csv')
+# sink('纺织行业营收模型.txt')
 # summary(lm1)
 # lm1$coefficients
 # print('置信区间:')

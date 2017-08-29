@@ -1,0 +1,29 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_gold[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-931459285 -274912481  -67596122  501371407 1062547613 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               1.246e+09  6.273e+08   1.985   0.0610 .  
+seasonQ2                  8.952e+08  3.254e+08   2.751   0.0123 *  
+seasonQ3                  7.058e+08  3.255e+08   2.169   0.0423 *  
+seasonQ4                  9.012e+08  3.257e+08   2.767   0.0119 *  
+美国.标准普尔500指数_lag1 2.213e+06  3.464e+05   6.388 3.12e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 584700000 on 20 degrees of freedom
+Multiple R-squared:  0.7246,	Adjusted R-squared:  0.6695 
+F-statistic: 13.15 on 4 and 20 DF,  p-value: 2.071e-05
+
+              (Intercept)                  seasonQ2                  seasonQ3                  seasonQ4 美国.标准普尔500指数_lag1 
+               1245530627                 895189591                 705829192                 901218038                   2213081 
+[1] "置信区间:"
+          fit        lwr        upr
+26 7288187175 6600349920 7976024430
+[1] "标准差:"
+[1] 329745594

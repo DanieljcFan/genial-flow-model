@@ -1,0 +1,28 @@
+
+Call:
+lm(formula = netin ~ ., data = dat_gold[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-109269569  -34059536    1381556   37170261   77395121 
+
+Coefficients:
+                                  Estimate Std. Error t value Pr(>|t|)   
+(Intercept)                     -263581261  139983483  -1.883  0.07363 . 
+RPI.金银珠宝.当月同比_lag4         5276586    2026850   2.603  0.01659 * 
+伦敦现货黄金.以美元计价             287267     101943   2.818  0.01031 * 
+美国.国债实际收益率.10年期_lag4   62826758   19300710   3.255  0.00379 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 52560000 on 21 degrees of freedom
+Multiple R-squared:  0.8673,	Adjusted R-squared:  0.8483 
+F-statistic: 45.75 on 3 and 21 DF,  p-value: 2.191e-09
+
+                    (Intercept)      RPI.金银珠宝.当月同比_lag4         伦敦现货黄金.以美元计价 美国.国债实际收益率.10年期_lag4 
+                   -263581261.2                       5276586.3                        287266.7                      62826757.9 
+[1] "置信区间:"
+         fit      lwr       upr
+26 132609422 87033507 178185337
+[1] "标准差:"
+[1] 21915566

@@ -1,16 +1,11 @@
 library(ggplot2)
+library(corrplot) #covariance visualization
 library(lubridate) # date management
 library(zoo) #date management
-library(corrplot) #covariance visualization
-library(glmnet) #lasso regression
 library(car) #vif detection
 library(reshape2) #mdataframe reshape
-#load company report####
-#dataframe重命名：行业、财务指标
-#修改从报表中提取的指标
-load("E:/FJC/report.rda")
-index <- grep('半导体', report$申万二级)
-semicon <- report[index,]
+
+#my function####
 report_clean <- function(name, time, y){
   #report_clean 函数处理公司季报，计算各季度财务指标的变化。对于季报残缺不齐的用平均法补齐
   #默认报告期为每季度末，输出后会将所有31号改为30号
@@ -59,25 +54,10 @@ report_clean <- function(name, time, y){
   return(de_y)
 }
 
-netin <- report_clean(semicon$corp_name, semicon$report_period, semicon$净利润)
-netin[netin == 0] <- NA
-netin <- netin[order(netin$time),]
-netin <- aggregate(netin$y, by=list(as.yearqtr(netin$time)), mean, na.rm = T)
-names(netin) <- c('time', 'netin')
-# netin
-
-#load chain factors######
-#更改路径至该行业的文件夹
-#读入数据，需对Excel表做预处理
-#注意时间列的格式（‘/’分割 or ‘-’分割）
-setwd("E:/FJC/半导体/")
-chain <- read.csv('半导体.csv')
-names(chain)[1] <- 'time'
-chain$time <- as.POSIXlt(chain$time, format = '%Y-%m-%d')
-
 Ave <- function(dat, t=1, type='season', ac = F){
   #ave函数对数据集中的指标按月或季度平均
-  #默认时间标签在第一列，格式为POSIXlt，包含年月信息
+  #t为时间标签的列号，默认在第一列，格式为POSIXlt，包含年月信息
+  #ac为FALSE时计算流量数据，ac为TRUE时计算累计值数据
   library(zoo)
   df <- list()
   if(type == 'season'){time <- as.yearqtr(dat[,t])}
@@ -101,70 +81,11 @@ Ave <- function(dat, t=1, type='season', ac = F){
   names(df) <- c('time',names(dat)[-1])
   return(df)
 }
-chain_season <- Ave(chain[, -grep('累[积计]', names(chain))], ac=F)
-tmp <- Ave(chain[, c(1,grep('累[积计]', names(chain)))], ac=T)
-chain_season <- merge(chain_season, tmp, by='time')
 
-# #各省产量加总
-# index <- grep('产量.半导体', names(chain_season))
-# chain_season$半导体产量 <- rowSums(chain_season[,index])
-# chain_season <- chain_season[,-index]
-# 
-# #补充变量
-# tmp <- read.csv('半导体成本.csv')
-# names(tmp)[1] <- 'time'
-# tmp$time <- as.POSIXlt(tmp$time, format='%Y-%m-%d')
-# tmp <- Ave(tmp)
-# chain_season <- merge(chain_season, tmp, by='time')
-# 
-# #补充变量
-# tmp <- read.csv('半导体营收.csv')
-# names(tmp)[1] <- 'time'
-# tmp$time <- as.POSIXlt(tmp$time, format='%Y/%m/%d')
-# tmp1 <- Ave(tmp[,-grep('累[积计]', names(tmp))])
-# chain_season <- merge(chain_season, tmp1, by='time')
-# tmp <- Ave(tmp[,c(1,grep('累[积计]', names(tmp)))], ac=T)
-# chain_season <- merge(chain_season, tmp)
-
-
-#删除缺失的变量
-chain_season <- chain_season[chain_season$time < 2017.5,]
-chain_season[chain_season == 0] <- NA
-na1 <- apply(chain_season, 2, function(x){sum(is.na(x))>0.5})
-# names(chain_season)[which(na1)]
-chain_season <- chain_season[,!na1]
-
-#merge X and Y ####
-X <- chain_season
-# X[X==0] <- NA
-# na1 <- apply(X, 1, function(x){sum(is.na(x))>0.5})
-# X <- X[!na1,]
-# X$season <- as.factor(sub('2','1', quarters(X$time)))
-X_lag1 <- X
-X_lag1$time <- X_lag1$time + 0.25 
-names(X_lag1)[-1] <- paste0(names(X)[-1],'_lag1')
-X_lag4 <- X
-X_lag4$time <- X_lag4$time + 1 
-names(X_lag4)[-1] <- paste0(names(X)[-1],'_lag4')
-
-X_all <- merge(merge(X, X_lag1),X_lag4)
-y_lag1 <- data.frame(time=netin$time + 0.25, y_lag1=netin$netin)
-y_lag2 <- data.frame(time=netin$time + 0.5, y_lag2=netin$netin)
-y_lag3 <- data.frame(time=netin$time + 0.75, y_lag3=netin$netin)
-y_lag4 <- data.frame(time=netin$time + 1, y_lag4=netin$netin)
-X_all <- merge(y_lag1,merge(y_lag2,merge(y_lag3,merge(y_lag4,X_all))))
-X_all$season <- as.factor(quarters(X_all$time))
-
-dat_semicon <- merge(netin,X_all)
-t <- dat_semicon[,1]
-dat_semicon <- dat_semicon[,-1]
-
-#model#####
-
-#model函数通过marginal-r2筛选自变量，利用vif限制自相关性
-#must为手动设定的必须加入模型的变量列号
-#输出$mode为模型，$index为入选模型的自变量列号
 Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
+  #model函数通过marginal-r2筛选自变量，利用vif限制自相关性
+  #must为手动设定的必须加入模型的变量列号，注意这时已剔除Y
+  #输出$mode为模型，$index为入选模型的自变量列号，注意这是剔除Y后的列号
   sst <- var(Y)
   r2 <- c()
   for(i in 1:ncol(X)){
@@ -199,47 +120,142 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
         r2_0 <- r2_1}}
   }
   
-  
   model <- lm(Y~., data = as.data.frame(cbind(Y, X[,index])))
   return(list(model=model,index=index))
 }
 
-m <- Model(dat_semicon$netin,
-           dat_semicon[-1],
-           vif=5,
-           must = 4,
-           method = 'aic'
-)
+#load company report####
+#dataframe重命名：行业、财务指标
+#修改从报表中提取的指标
+load("E:/FJC/report.rda")
+index <- grep('塑料', report$申万二级)
+plastic <- report[index,]
+#佛塑科技11Q4利润暴涨，剔除
+index <- grep('佛塑', plastic$corp_name)
+plastic <- report[-index,]
 
-mean(abs(m$model$residuals/dat_semicon$netin))
-summary(m$model)
+
+netin <- report_clean(plastic$corp_name, plastic$report_period, plastic$净利润)
+netin[netin == 0] <- NA
+netin <- netin[order(netin$time),]
+netin <- aggregate(netin$y, by=list(as.yearqtr(netin$time)), mean, na.rm = T)
+names(netin) <- c('time', 'netin')
+# netin
+
+#load chain factors######
+#更改路径至该行业的文件夹
+#读入数据，需对Excel表做预处理
+#注意时间列的格式（‘/’分割 or ‘-’分割）
+setwd("E:/FJC/塑料/")
+chain <- read.csv('塑料行业1.csv')
+names(chain)[1] <- 'time'
+chain$time <- as.POSIXlt(chain$time, format = '%Y/%m/%d')
+
+
+chain_season <- Ave(chain[, -grep('累[积计]', names(chain))], ac=F)
+tmp <- Ave(chain[, c(1,grep('累[积计]', names(chain)))], ac=T)
+chain_season <- merge(chain_season, tmp, by='time')
+
+#补充变量
+tmp <- read.csv('动力煤价.csv')
+names(tmp)[1] <- 'time'
+tmp$time <- as.POSIXlt(tmp$time, format='%Y-%m-%d')
+tmp <- Ave(tmp)
+chain_season <- merge(chain_season, tmp, by='time')
+
+
+# #各省产量加总
+# index <- grep('产量.塑料', names(chain_season))
+# chain_season$塑料产量 <- rowSums(chain_season[,index])
+# chain_season <- chain_season[,-index]
+# 
+# #补充变量
+# tmp <- read.csv('塑料营收.csv')
+# names(tmp)[1] <- 'time'
+# tmp$time <- as.POSIXlt(tmp$time, format='%Y/%m/%d')
+# tmp1 <- Ave(tmp[,-grep('累[积计]', names(tmp))])
+# chain_season <- merge(chain_season, tmp1, by='time')
+# tmp <- Ave(tmp[,c(1,grep('累[积计]', names(tmp)))], ac=T)
+# chain_season <- merge(chain_season, tmp)
+
+
+#删除缺失的变量
+chain_season <- chain_season[chain_season$time < 2017.5,] #一季度为.0，二季度.25，三季度.5，四季度.75
+chain_season[chain_season == 0] <- NA
+na1 <- apply(chain_season, 2, function(x){sum(is.na(x))>0.5})
+# names(chain_season)[which(na1)]
+chain_season <- chain_season[,!na1]
+
+#merge X and Y ####
+X <- chain_season
+#补充提前期的变量
+X_lag1 <- X
+X_lag1$time <- X_lag1$time + 0.25 
+names(X_lag1)[-1] <- paste0(names(X)[-1],'_lag1')
+X_lag2 <- X
+X_lag2$time <- X_lag2$time + 0.5 
+names(X_lag2)[-1] <- paste0(names(X)[-1],'_lag2')
+X_lag3 <- X
+X_lag3$time <- X_lag3$time + 0.75 
+names(X_lag3)[-1] <- paste0(names(X)[-1],'_lag3')
+X_lag4 <- X
+X_lag4$time <- X_lag4$time + 1 
+names(X_lag4)[-1] <- paste0(names(X)[-1],'_lag4')
+
+X_all <- merge(merge(merge(merge(X, X_lag1),X_lag2),X_lag3),X_lag4)
+y_lag1 <- data.frame(time=netin$time + 0.25, y_lag1=netin$netin)
+y_lag2 <- data.frame(time=netin$time + 0.5, y_lag2=netin$netin)
+y_lag3 <- data.frame(time=netin$time + 0.75, y_lag3=netin$netin)
+y_lag4 <- data.frame(time=netin$time + 1, y_lag4=netin$netin)
+X_all <- merge(y_lag1,merge(y_lag2,merge(y_lag3,merge(y_lag4,X_all))))
+X_all$season <- as.factor(sub('4','',quarters(X_all$time))) #sub可将不同季度合并，减少变量数
+
+#合并X,Y，时间戳另存为t
+dat_plastic <- merge(netin,X_all)
+t <- dat_plastic[,1] 
+dat_plastic <- dat_plastic[,-1]
+
+#model#####
+m <- Model(dat_plastic$netin,
+           dat_plastic[-1],
+           vif=5,
+           must = 121+117*1,
+           method = 'aic')
+
+mean(abs(m$model$residuals/dat_plastic$netin)) #相对误差
+summary(m$model) 
 vif(m$model)
 
 df <- data.frame(time=t,
-                 actual=dat_semicon$netin,
+                 actual=dat_plastic$netin,
                  pred=m$model$fitted.values)
 df <- melt(df, id='time')
-ggplot(df, aes(time, value, color=variable)) + geom_line()
+ggplot(df, aes(time, value, color=variable)) + geom_line() +
+  labs(title = '塑料行业净利润')
 
-# tmp <- dat_semicon[,m$index+1]
+#相关系数图，辅助变量选择
+# tmp <- dat_plastic[,m$index+1]
 # names(tmp) <- ''
 # corr <- cor(tmp)
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
-index <- m$index[-c(2,4)]
-lm1 <- lm(netin~., data = dat_semicon[,c(0,index)+1])
-mean(abs(lm1$residuals/dat_semicon$netin))
+#手动剔除变量，修改模型
+index <- m$index[-c(7)]
+lm1 <- lm(netin~., data = dat_plastic[,c(0,index)+1])
+mean(abs(lm1$residuals/dat_plastic$netin))
 summary(lm1)
 vif(lm1)
 
+#输出 csv为回测的真值和预测值，txt为模型，及下一期预测值
 pred <- predict(lm1,X_all[X_all$time == '2017 Q2',index+1],se.fit = T,interval = 'confidence')
 df <- data.frame(time=t,
-                 actual=dat_semicon$netin,
+                 actual=dat_plastic$netin,
                  pred=lm1$fitted.values)
 # df <- melt(df, id='time')
-# ggplot(df, aes(time, value, color=variable)) + geom_line()
-# write.csv(df, file = '半导体行业净利润.csv')
-# sink('半导体行业净利润模型.txt')
+# ggplot(df, aes(time, value, color=variable)) + geom_line() +
+#    labs(title = '塑料行业净利润')
+# write.csv(df, file = '塑料行业净利润.csv')
+# sink('塑料行业净利润模型.txt')
 # summary(lm1)
 # lm1$coefficients
 # print('置信区间:')

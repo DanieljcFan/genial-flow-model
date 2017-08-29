@@ -228,8 +228,8 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
 
 m <- Model(dat_textile$netin,
            dat_textile[-1],
-           vif=10,
-           must = ncol(dat_textile)-1,
+           vif=5,
+           # must = ncol(dat_textile)-1,
            method = 'aic'
 )
 
@@ -250,7 +250,7 @@ ggplot(df, aes(time, value, color=variable)) + geom_line() +
 # corr <- cor(tmp)
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
-index <- m$index[-c(2,4)]
+index <- m$index[-c(2,5,6)]
 lm1 <- lm(netin~., data = dat_textile[,c(0,index)+1])
 mean(abs(lm1$residuals/dat_textile$netin))
 summary(lm1)
