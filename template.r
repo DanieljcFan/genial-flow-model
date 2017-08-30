@@ -92,7 +92,6 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
     lm0 <- lm(Y~., data = as.data.frame(cbind(Y,X[,i])))
     tmp <- 1- var(lm0$residuals)/sst
     r2 <- c(r2, tmp)}
-
   index <- must
   if(method == 'aic'){
     aic0 <- extractAIC(lm(Y~., data = as.data.frame(cbind(Y,X[,index]))))[2]
