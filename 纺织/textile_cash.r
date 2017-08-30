@@ -59,12 +59,12 @@ report_clean <- function(name, time, y){
   return(de_y)
 }
 
-cost <- report_clean(textile$corp_name, textile$report_period, textile$营业总成本)
-cost[cost == 0] <- NA
-cost <- cost[order(cost$time),]
-cost <- aggregate(cost$y, by=list(as.yearqtr(cost$time)), mean, na.rm = T)
-names(cost) <- c('time', 'cost')
-# cost
+cash <- report_clean(textile$corp_name, textile$report_period, textile$经营活动现金净流量)
+cash[cash == 0] <- NA
+cash <- cash[order(cash$time),]
+cash <- aggregate(cash$y, by=list(as.yearqtr(cash$time)), mean, na.rm = T)
+names(cash) <- c('time', 'cash')
+# cash
 
 #load chain factors######
 #更改路径至该行业的文件夹
@@ -158,14 +158,14 @@ X_lag4$time <- X_lag4$time + 1
 names(X_lag4)[-1] <- paste0(names(X)[-1],'_lag4')
 
 X_all <- merge(merge(merge(merge(X, X_lag1),X_lag2),X_lag3),X_lag4)
-y_lag1 <- data.frame(time=cost$time + 0.25, y_lag1=cost$cost)
-y_lag2 <- data.frame(time=cost$time + 0.5, y_lag2=cost$cost)
-y_lag3 <- data.frame(time=cost$time + 0.75, y_lag3=cost$cost)
-y_lag4 <- data.frame(time=cost$time + 1, y_lag4=cost$cost)
+y_lag1 <- data.frame(time=cash$time + 0.25, y_lag1=cash$cash)
+y_lag2 <- data.frame(time=cash$time + 0.5, y_lag2=cash$cash)
+y_lag3 <- data.frame(time=cash$time + 0.75, y_lag3=cash$cash)
+y_lag4 <- data.frame(time=cash$time + 1, y_lag4=cash$cash)
 X_all <- merge(y_lag1,merge(y_lag2,merge(y_lag3,merge(y_lag4,X_all))))
 X_all$season <- as.factor(sub('4','3',quarters(X_all$time)))
 
-dat_textile <- merge(cost,X_all)
+dat_textile <- merge(cash,X_all)
 t <- dat_textile[,1]
 dat_textile <- dat_textile[,-1]
 
@@ -226,23 +226,23 @@ Model <- function(Y,X, must=c(),vif=15, method=c('aic','adj.r2')){
   return(list(model=model,index=index))
 }
 
-m <- Model(dat_textile$cost,
+m <- Model(dat_textile$cash,
            dat_textile[-1],
            vif=5,
-           # must = 4,
+           must = 4,
            method = 'aic'
 )
 
-mean(abs(m$model$residuals/dat_textile$cost))
+mean(abs(m$model$residuals/dat_textile$cash))
 summary(m$model)
 vif(m$model)
 
 df <- data.frame(time=t,
-                 actual=dat_textile$cost,
+                 actual=dat_textile$cash,
                  pred=m$model$fitted.values)
 df <- melt(df, id='time')
 ggplot(df, aes(time, value, color=variable)) + geom_line() +
-  labs(title = '纺织行业成本')
+  labs(title = '纺织行业现金流')
 
 
 # tmp <- dat_textile[,m$index+1]
@@ -250,21 +250,21 @@ ggplot(df, aes(time, value, color=variable)) + geom_line() +
 # corr <- cor(tmp)
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
-index <- m$index[-c(2,4,6,9)]
-lm1 <- lm(cost~., data = dat_textile[,c(0,index)+1])
-mean(abs(lm1$residuals/dat_textile$cost))
+index <- m$index[-c(1,3,5,6,7)]
+lm1 <- lm(cash~., data = dat_textile[,c(0,index)+1])
+mean(abs(lm1$residuals/dat_textile$cash))
 summary(lm1)
 vif(lm1)
 
 pred <- predict(lm1,X_all[X_all$time == '2017 Q2',index+1],se.fit = T,interval = 'confidence')
 df <- data.frame(time=t,
-                 actual=dat_textile$cost,
+                 actual=dat_textile$cash,
                  pred=lm1$fitted.values)
 # df <- melt(df, id='time')
 # ggplot(df, aes(time, value, color=variable)) + geom_line() +
-#    labs(title = '纺织行业成本')
-# write.csv(df, file = '纺织行业成本.csv')
-# sink('纺织行业成本模型.txt')
+#    labs(title = '纺织行业现金流')
+# write.csv(df, file = '纺织行业现金流.csv')
+# sink('纺织行业现金流模型.txt')
 # summary(lm1)
 # lm1$coefficients
 # print('置信区间:')
