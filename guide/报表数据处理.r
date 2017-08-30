@@ -1,4 +1,4 @@
-setwd("I:work/genial-flow/")
+setwd("E:/FJC/")
 load("data.Rdata")
 #时间格式调整
 index <- which(!is.na(as.numeric(data$report_period)))
