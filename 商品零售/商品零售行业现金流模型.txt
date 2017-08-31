@@ -1,0 +1,36 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_retail[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-122697415  -31077939    3236928   33738225   77616919 
+
+Coefficients:
+                                       Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                          -7.163e+09  1.839e+09  -3.895  0.00116 ** 
+社会消费品零售总额.城镇.当月值       -9.274e+03  3.705e+03  -2.503  0.02279 *  
+seasonQ2                              8.223e+07  3.530e+07   2.329  0.03242 *  
+seasonQ3                              2.319e+08  3.715e+07   6.242 8.94e-06 ***
+seasonQ4                              3.796e+08  3.987e+07   9.520 3.17e-08 ***
+消费者预期指数.月._lag4               1.908e+07  5.346e+06   3.569  0.00236 ** 
+义乌中国小商品指数.顾客人气指数_lag1  7.875e+06  2.575e+06   3.059  0.00710 ** 
+消费者满意指数.月._lag2              -9.083e+06  4.662e+06  -1.949  0.06805 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 62650000 on 17 degrees of freedom
+Multiple R-squared:  0.8534,	Adjusted R-squared:  0.7931 
+F-statistic: 14.14 on 7 and 17 DF,  p-value: 5.775e-06
+
+                         (Intercept)       社会消费品零售总额.城镇.当月值                             seasonQ2 
+                       -7.163012e+09                        -9.274511e+03                         8.223186e+07 
+                            seasonQ3                             seasonQ4              消费者预期指数.月._lag4 
+                        2.318505e+08                         3.795929e+08                         1.907912e+07 
+义乌中国小商品指数.顾客人气指数_lag1              消费者满意指数.月._lag2 
+                        7.875477e+06                        -9.083332e+06 
+[1] "置信区间:"
+         fit        lwr      upr
+26 -89367042 -197386579 18652496
+[1] "标准差:"
+[1] 51198568

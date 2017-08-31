@@ -1,0 +1,28 @@
+
+Call:
+lm(formula = revenue ~ ., data = dat_plastic[, c(0, index) + 
+    1])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-47903242 -20480964  -1467053  11119444  78848644 
+
+Coefficients:
+                                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                     -3.709e+07  4.394e+07  -0.844   0.4077    
+产量.初级形态的塑料.当月值_lag4  5.065e+05  9.031e+04   5.608 1.22e-05 ***
+产量.日用塑料制品.当月值         4.390e+02  1.433e+02   3.063   0.0057 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 30390000 on 22 degrees of freedom
+Multiple R-squared:  0.8868,	Adjusted R-squared:  0.8766 
+F-statistic: 86.22 on 2 and 22 DF,  p-value: 3.893e-11
+
+                    (Intercept) 产量.初级形态的塑料.当月值_lag4        产量.日用塑料制品.当月值 
+                  -3.709166e+07                    5.065084e+05                    4.390295e+02 
+[1] "置信区间:"
+         fit       lwr       upr
+26 580860828 550200355 611521302
+[1] "标准差:"
+[1] 14784161
