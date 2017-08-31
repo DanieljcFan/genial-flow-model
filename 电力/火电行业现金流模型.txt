@@ -1,0 +1,27 @@
+
+Call:
+lm(formula = cash ~ ., data = dat_power[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-129702613  -48888944    -654776   23153858  147078214 
+
+Coefficients:
+                                    Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                        130588337  226806336   0.576  0.57061    
+市场价.动力煤.Q5500.山西产..秦皇岛   -777310      89127  -8.721 1.37e-08 ***
+产量.原煤.当月值_lag3                  23312       7220   3.229  0.00386 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 64650000 on 22 degrees of freedom
+Multiple R-squared:  0.8014,	Adjusted R-squared:  0.7834 
+F-statistic: 44.39 on 2 and 22 DF,  p-value: 1.894e-08
+
+                       (Intercept) 市场价.动力煤.Q5500.山西产..秦皇岛              产量.原煤.当月值_lag3 
+                      130588336.84                         -777310.02                           23311.88 
+[1] "置信区间:"
+         fit       lwr       upr
+26 301501724 252669758 350333690
+[1] "标准差:"
+[1] 23546266

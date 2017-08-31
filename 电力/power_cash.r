@@ -131,12 +131,12 @@ load("E:/FJC/report.rda")
 index <- grep('火电', report$申万三级)
 power <- report[index,]
 
-revenue <- report_clean(power$corp_name, power$report_period, power$营业总收入)
-revenue[revenue == 0] <- NA
-revenue <- revenue[order(revenue$time),]
-revenue <- aggregate(revenue$y, by=list(as.yearqtr(revenue$time)), mean, na.rm = T)
-names(revenue) <- c('time', 'revenue')
-# revenue
+cash <- report_clean(power$corp_name, power$report_period, power$经营活动现金净流量)
+cash[cash == 0] <- NA
+cash <- cash[order(cash$time),]
+cash <- aggregate(cash$y, by=list(as.yearqtr(cash$time)), mean, na.rm = T)
+names(cash) <- c('time', 'cash')
+# cash
 
 #load chain factors######
 #更改路径至该行业的文件夹
@@ -155,14 +155,14 @@ chain_season <- merge(chain_season, tmp, by='time')
 #用电量加总
 
 # #补充变量
-# tmp <- read.csv('火电成本.csv')
+# tmp <- read.csv('火电现金流.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y-%m-%d')
 # tmp <- Ave(tmp)
 # chain_season <- merge(chain_season, tmp, by='time')
 # 
 # #补充变量
-# tmp <- read.csv('火电营收.csv')
+# tmp <- read.csv('火电现金流.csv')
 # names(tmp)[1] <- 'time'
 # tmp$time <- as.POSIXlt(tmp$time, format='%Y/%m/%d')
 # tmp1 <- Ave(tmp[,-grep('累[积计]', names(tmp))])
@@ -200,35 +200,35 @@ X_lag4$time <- X_lag4$time + 1
 names(X_lag4)[-1] <- paste0(names(X)[-1],'_lag4')
 
 X_all <- merge(merge(merge(merge(X, X_lag1),X_lag2),X_lag3),X_lag4)
-y_lag1 <- data.frame(time=revenue$time + 0.25, y_lag1=revenue$revenue)
-y_lag2 <- data.frame(time=revenue$time + 0.5, y_lag2=revenue$revenue)
-y_lag3 <- data.frame(time=revenue$time + 0.75, y_lag3=revenue$revenue)
-y_lag4 <- data.frame(time=revenue$time + 1, y_lag4=revenue$revenue)
+y_lag1 <- data.frame(time=cash$time + 0.25, y_lag1=cash$cash)
+y_lag2 <- data.frame(time=cash$time + 0.5, y_lag2=cash$cash)
+y_lag3 <- data.frame(time=cash$time + 0.75, y_lag3=cash$cash)
+y_lag4 <- data.frame(time=cash$time + 1, y_lag4=cash$cash)
 X_all <- merge(y_lag1,merge(y_lag2,merge(y_lag3,merge(y_lag4,X_all))))
-X_all$season <- as.factor(sub('2|3','1',quarters(X_all$time))) #sub可将不同季度合并，减少变量数
+X_all$season <- as.factor(sub('2','1',quarters(X_all$time))) #sub可将不同季度合并，减少变量数
 
 #合并X,Y，时间戳另存为t
-dat_power <- merge(revenue,X_all)
+dat_power <- merge(cash,X_all)
 t <- dat_power[,1] 
 dat_power <- dat_power[,-1]
 
 #model#####
-m <- Model(dat_power$revenue,
+m <- Model(dat_power$cash,
            dat_power[-1],
            vif=5,
-           must = ncol(dat_power)-1,
+           # must = ncol(dat_power)-1,
            method = 'aic')
 
-mean(abs(m$model$residuals/dat_power$revenue)) #相对误差
+mean(abs(m$model$residuals/dat_power$cash)) #相对误差
 summary(m$model) 
 vif(m$model)
 
 df <- data.frame(time=t,
-                 actual=dat_power$revenue,
+                 actual=dat_power$cash,
                  pred=m$model$fitted.values)
 df <- melt(df, id='time')
 ggplot(df, aes(time, value, color=variable)) + geom_line() +
-  labs(title = '火电行业营收')
+  labs(title = '火电行业现金流')
 
 #相关系数图，辅助变量选择
 # tmp <- dat_power[,m$index+1]
@@ -237,22 +237,22 @@ ggplot(df, aes(time, value, color=variable)) + geom_line() +
 # corrplot.mixed(corr, diag = 'n', tl.pos = 'lt')
 
 #手动剔除变量，修改模型
-index <- m$index[-c(2,5)]
-lm1 <- lm(revenue~., data = dat_power[,c(0,index)+1])
-mean(abs(lm1$residuals/dat_power$revenue))
+index <- m$index[-c(2,3,4)]
+lm1 <- lm(cash~., data = dat_power[,c(0,index)+1])
+mean(abs(lm1$residuals/dat_power$cash))
 summary(lm1)
 vif(lm1)
 
 #输出 csv为回测的真值和预测值，txt为模型，及下一期预测值
 pred <- predict(lm1,X_all[X_all$time == '2017 Q2',index+1],se.fit = T,interval = 'confidence')
 df <- data.frame(time=t,
-                 actual=dat_power$revenue,
+                 actual=dat_power$cash,
                  pred=lm1$fitted.values)
 # df <- melt(df, id='time')
 # ggplot(df, aes(time, value, color=variable)) + geom_line() +
-#    labs(title = '火电行业营收')
-# write.csv(df, file = '火电行业营收.csv')
-# sink('火电行业营收模型.txt')
+#    labs(title = '火电行业现金流')
+# write.csv(df, file = '火电行业现金流.csv')
+# sink('火电行业现金流模型.txt')
 # summary(lm1)
 # lm1$coefficients
 # print('置信区间:')

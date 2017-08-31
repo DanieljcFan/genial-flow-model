@@ -1,0 +1,28 @@
+
+Call:
+lm(formula = cost ~ ., data = dat_power[, c(0, index) + 1])
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-296560979  -66717261   -5840626   96692848  201933637 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       9.889e+08  3.331e+08   2.968 0.007333 ** 
+seasonQ4          2.625e+08  5.877e+07   4.466 0.000213 ***
+y_lag2           -2.746e-01  1.083e-01  -2.535 0.019279 *  
+产量.火电.当月值  2.604e+05  9.508e+04   2.738 0.012316 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 119600000 on 21 degrees of freedom
+Multiple R-squared:  0.6781,	Adjusted R-squared:  0.6321 
+F-statistic: 14.75 on 3 and 21 DF,  p-value: 2.156e-05
+
+     (Intercept)         seasonQ4           y_lag2 产量.火电.当月值 
+    9.888911e+08     2.624651e+08    -2.745710e-01     2.603690e+05 
+[1] "置信区间:"
+          fit        lwr        upr
+26 1415024507 1335176664 1494872351
+[1] "标准差:"
+[1] 38395515

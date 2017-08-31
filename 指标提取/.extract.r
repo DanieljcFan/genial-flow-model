@@ -43,8 +43,6 @@ print(patch[!index,])
 patch <- patch[index,]
 lapply(unique(patch$corp_name), function(x) {dir.create(paste0('patch/',x,'/'))})
 
-
-
 apply(patch,1,Extract, wd='patch/')
 
 
